@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     public Transform groundCheck;
     public float groundRadius = 0.2f;
 
+    private Vector3 respawnPosition;
     [Tooltip("Layer untuk tanah utama")]
     public LayerMask groundLayer;
     [Tooltip("Layer untuk platform melayang")]
@@ -50,6 +51,7 @@ public class PlayerController : MonoBehaviour
 
     private void Start()
     {
+        respawnPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
 
@@ -162,5 +164,16 @@ public class PlayerController : MonoBehaviour
         if (rightWallCheck != null) { Gizmos.color = Color.blue; Gizmos.DrawWireSphere(rightWallCheck.position, wallCheckDistance); }
     }
     
+    public void DieAndRespawn()
+    {
+        // Kembalikan ke posisi awal
+        transform.position = respawnPosition;
+
+        // Reset kecepatan
+        rb.velocity = Vector2.zero;
+
+        // Anda bisa tambahkan efek suara/visual kematian di sini
+        // Debug.Log("Player terkena trap!");
+    }
     
 }

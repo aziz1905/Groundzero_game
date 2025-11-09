@@ -10,7 +10,7 @@ public class RockFalling : MonoBehaviour
         if (collision.gameObject.CompareTag("Player"))
         {
             // Ambil skrip 'Movement' dari player
-            Movement playerMovement = collision.gameObject.GetComponent<Movement>();
+            PlayerController playerMovement = collision.gameObject.GetComponent<PlayerController>();
 
             if (playerMovement != null)
             {
