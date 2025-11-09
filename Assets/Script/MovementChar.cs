@@ -4,15 +4,14 @@ using UnityEngine;
 
 public class MovementChar : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private Rigidbody2D rb;
+    private void Awake()
     {
-        
+        rb = GetComponent<Rigidbody2D>();
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        rb.isKinematic = false;
     }
 }
