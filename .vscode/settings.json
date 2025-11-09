@@ -56,5 +56,5 @@
         "temp/": true,
         "Temp/": true
     },
-    "dotnet.defaultSolution": "Groundzero_game.slnx"
+    "dotnet.defaultSolution": "Groundzero_game.sln"
 }
