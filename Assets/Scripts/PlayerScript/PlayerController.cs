@@ -258,3 +258,10 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
+    public void SetNewRespawnPoint(Vector3 newPosition)
+    {
+        // Ganti posisi respawn lama dengan yang baru
+        Debug.Log("Checkpoint baru ditetapkan di: " + newPosition);
+        respawnPosition = newPosition;
+    }
+}
