@@ -1123,8 +1123,8 @@ MonoBehaviour:
   wallCheckDistance: 0.3
   leftWallCheck: {fileID: 239290651}
   rightWallCheck: {fileID: 1914299100}
-  JumpBar: {fileID: 1707002391}
-  chargeIndicator: {fileID: 754584450}
+  chargeIndicator: {fileID: 754584454}
+  jumpBar: {fileID: 1707002391}
 --- !u!50 &148110466
 Rigidbody2D:
   serializedVersion: 4
@@ -1248,7 +1248,7 @@ Transform:
   m_GameObject: {fileID: 148110463}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5.57, y: 5.28, z: 0}
+  m_LocalPosition: {x: 0, y: -4.029, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2559,7 +2559,7 @@ Transform:
   m_GameObject: {fileID: 364089259}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 8.29, z: -10}
+  m_LocalPosition: {x: 0, y: -0.18, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -10092,7 +10092,7 @@ GameObject:
   - component: {fileID: 754584453}
   - component: {fileID: 754584452}
   - component: {fileID: 754584451}
-  - component: {fileID: 754584450}
+  - component: {fileID: 754584454}
   m_Layer: 5
   m_Name: Jump Charge Front
   m_TagString: Untagged
@@ -10100,23 +10100,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &754584450
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 754584449}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64375d5e73dcf164ca1ee533de13cba2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chargeBarImage: {fileID: 754584451}
-  chargeSpeed: 1.5
-  playerTransform: {fileID: 148110469}
-  offsetFromPlayer: {x: -1, y: -0.8, z: 0}
-  followPlayer: 1
 --- !u!114 &754584451
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10171,9 +10154,26 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 459, y: 152}
+  m_AnchoredPosition: {x: 469.67, y: 41.9}
   m_SizeDelta: {x: 24.0801, y: 92.0117}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &754584454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 754584449}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64375d5e73dcf164ca1ee533de13cba2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chargeBarImage: {fileID: 754584451}
+  chargeSpeed: 1.5
+  playerTransform: {fileID: 0}
+  offsetFromPlayer: {x: -1, y: -0.8, z: 0}
+  followPlayer: 1
 --- !u!1 &757898075
 GameObject:
   m_ObjectHideFlags: 0
@@ -17099,7 +17099,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1707002392
 RectTransform:
   m_ObjectHideFlags: 0
@@ -19161,7 +19161,6 @@ GameObject:
   - component: {fileID: 1988059921}
   - component: {fileID: 1988059924}
   - component: {fileID: 1988059923}
-  - component: {fileID: 1988059922}
   m_Layer: 5
   m_Name: Jump Charge Back
   m_TagString: Untagged
@@ -19176,35 +19175,18 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1988059920}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1707002392}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 459, y: 152}
+  m_AnchoredPosition: {x: 469.67, y: 41.9}
   m_SizeDelta: {x: 24.0801, y: 92.0117}
   m_Pivot: {x: 0, y: 0}
---- !u!114 &1988059922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1988059920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64375d5e73dcf164ca1ee533de13cba2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  chargeBarImage: {fileID: 0}
-  chargeSpeed: 1.5
-  playerTransform: {fileID: 148110469}
-  offsetFromPlayer: {x: -1, y: -0.8, z: 0}
-  followPlayer: 1
 --- !u!114 &1988059923
 MonoBehaviour:
   m_ObjectHideFlags: 0

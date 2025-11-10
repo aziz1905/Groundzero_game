@@ -17,15 +17,12 @@ public class ChargeIndikator : MonoBehaviour
     private bool isCharging = false;
     private RectTransform rectTransform;
     private Camera mainCamera;
+    private Coroutine hideCoroutine;
 
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        
-        if (mainCamera == null)
-        {
-            mainCamera = Camera.main;
-        }
+        if (mainCamera == null) mainCamera = Camera.main;
         
         if (chargeBarImage != null)
         {
@@ -37,19 +34,11 @@ public class ChargeIndikator : MonoBehaviour
     
     void Start()
     {
-        if (mainCamera == null)
-        {
-            mainCamera = Camera.main;
-        }
-        
+        if (mainCamera == null) mainCamera = Camera.main;
         InitializePlayerReference();
+        if (offsetFromPlayer.x > 0) offsetFromPlayer.x = -Mathf.Abs(offsetFromPlayer.x);
         
-        if (offsetFromPlayer.x > 0)
-        {
-            offsetFromPlayer.x = -Mathf.Abs(offsetFromPlayer.x);
-        }
-        
-        gameObject.SetActive(false);
+        gameObject.SetActive(false); // Mulai dalam keadaan mati
     }
     
     void InitializePlayerReference()
@@ -57,25 +46,18 @@ public class ChargeIndikator : MonoBehaviour
         if (playerTransform == null)
         {
             GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null)
-            {
-                playerTransform = player.transform;
-            }
+            if (player != null) playerTransform = player.transform;
             else
             {
                 PlayerController playerController = FindObjectOfType<PlayerController>();
-                if (playerController != null)
-                {
-                    playerTransform = playerController.transform;
-                }
+                if (playerController != null) playerTransform = playerController.transform;
             }
         }
     }
     
     void Update()
     {
-        if (!gameObject.activeSelf)
-            return;
+        if (!gameObject.activeSelf) return;
         
         if (isCharging)
         {
@@ -83,7 +65,6 @@ public class ChargeIndikator : MonoBehaviour
             {
                 currentFill += chargeSpeed * Time.deltaTime;
                 currentFill = Mathf.Clamp(currentFill, 0f, 1f); 
-                
                 if (chargeBarImage != null)
                     chargeBarImage.fillAmount = currentFill;
             }
@@ -97,96 +78,65 @@ public class ChargeIndikator : MonoBehaviour
 
     void UpdatePosition()
     {
-        // Pastikan playerTransform ada
         if (playerTransform == null)
         {
             InitializePlayerReference();
-            if (playerTransform == null)
-            {
-                return;
-            }
+            if (playerTransform == null) return;
         }
-        
-        // Pastikan rectTransform ada
         if (rectTransform == null)
         {
             rectTransform = GetComponent<RectTransform>();
-            if (rectTransform == null)
-            {
-                Debug.LogWarning("ChargeIndikator: RectTransform tidak ditemukan!");
-                return;
-            }
+            if (rectTransform == null) return;
         }
-        
-        // Pastikan mainCamera ada
         if (mainCamera == null)
         {
             mainCamera = Camera.main;
-            if (mainCamera == null)
-            {
-                Debug.LogWarning("ChargeIndikator: Main Camera tidak ditemukan!");
-                return;
-            }
+            if (mainCamera == null) return;
         }
         
         Vector3 offset = offsetFromPlayer;
-        if (offset.x > 0)
-        {
-            offset.x = -Mathf.Abs(offset.x);
-        }
+        if (offset.x > 0) offset.x = -Mathf.Abs(offset.x);
         
         Vector3 worldPos = playerTransform.position + offset;
         Vector2 screenPos = mainCamera.WorldToScreenPoint(worldPos);
-        
         rectTransform.position = screenPos;
     }
 
     public void StartCharge()
     {
-        // Pastikan semua komponen sudah diinisialisasi sebelum memulai charge
+        if (hideCoroutine != null)
+        {
+            StopCoroutine(hideCoroutine);
+            hideCoroutine = null;
+        }
+
         InitializePlayerReference();
+        if (mainCamera == null) mainCamera = Camera.main;
+        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
         
-        // Pastikan camera sudah diinisialisasi
-        if (mainCamera == null)
-        {
-            mainCamera = Camera.main;
-        }
-        
-        // Pastikan rectTransform sudah diinisialisasi
-        if (rectTransform == null)
-        {
-            rectTransform = GetComponent<RectTransform>();
-        }
-        
-        // Reset charge state
         isCharging = true;
-        currentFill = 0f; 
         
-        // Pastikan chargeBarImage sudah di-setup dengan benar
+        // ==========================================================
+        // === PERUBAHAN DI SINI ===
+        // ==========================================================
+        // Jangan atur ke 0, tapi ke nilai kecil agar langsung terlihat
+        currentFill = 0.01f; 
+        
         if (chargeBarImage != null)
         {
             chargeBarImage.type = Image.Type.Filled;
             chargeBarImage.fillMethod = Image.FillMethod.Vertical;
             chargeBarImage.fillOrigin = (int)Image.OriginVertical.Bottom;
-            chargeBarImage.fillAmount = 0f;
+            chargeBarImage.fillAmount = currentFill; // Atur ke nilai kecil
         }
+        // ==========================================================
         
-        // Aktifkan GameObject
-        gameObject.SetActive(true);
+        gameObject.SetActive(true); 
         
-        // Update posisi segera setelah diaktifkan (jika semua komponen sudah siap)
-        // Ini penting agar UI langsung terlihat di posisi yang benar
         if (followPlayer && playerTransform != null)
         {
-            // Pastikan semua komponen sudah siap sebelum update posisi
-            if (mainCamera == null)
-            {
-                mainCamera = Camera.main;
-            }
-            if (rectTransform == null)
-            {
-                rectTransform = GetComponent<RectTransform>();
-            }
+            if (mainCamera == null) mainCamera = Camera.main;
+            if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
             if (mainCamera != null && rectTransform != null)
             {
                 UpdatePosition();
@@ -198,7 +148,23 @@ public class ChargeIndikator : MonoBehaviour
     {
         isCharging = false;
         
+        if (!gameObject.activeSelf) // Fix error coroutine
+        {
+            return; 
+        }
+        
+        if (hideCoroutine != null)
+        {
+            StopCoroutine(hideCoroutine);
+        }
+        hideCoroutine = StartCoroutine(HideAfterRenderFrame());
+    }
+
+    private IEnumerator HideAfterRenderFrame()
+    {
+        yield return null; // Tunggu 1 frame
         gameObject.SetActive(false); 
+        hideCoroutine = null;
     }
 
     public float GetCurrentChargeValue()
