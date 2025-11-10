@@ -6,23 +6,19 @@ public class PlayerController : MonoBehaviour
 {
     // === Jump Settings ===
     [Header("Jump Settings")]
-    [Tooltip("Kekuatan lompat minimum (charge 0%)")]
-    public float minJumpForce = 5f;
-    [Tooltip("Kekuatan lompat maksimum (charge 100%)")]
-    public float maxJumpForce = 15f;
-    [Tooltip("Sudut lompatan diagonal (derajat dari horizontal)")]
-    public float jumpAngle = 75f;
-    
+    public float minJumpForce = 10f;
+    public float maxJumpForce = 20f;
+    public float jumpAngle = 72f;
+    public float fallGravityMultiplier = 1.5f;
+
     public Transform groundCheck;
     public float groundRadius = 0.2f;
 
     private Vector3 respawnPosition;
-    [Tooltip("Layer untuk tanah utama")]
-    public LayerMask groundLayer;
-    [Tooltip("Layer untuk platform melayang")]
-    public LayerMask floatingGroundLayer;
+    [Tooltip("Layer APA SAJA yang bisa diinjak oleh player")]
+    public LayerMask walkableLayers;
 
-    // === Movement (HANYA DI DARAT) ===
+    // === Movement (Ground Only) ===
     [Header("Movement (Ground Only)")]
     public float moveSpeed = 5f;
 
@@ -41,20 +37,17 @@ public class PlayerController : MonoBehaviour
 
     // === UI ===
     [Header("UI")]
-    public ChargeIndikator chargeIndicator; // Front indicator (deprecated, gunakan array dibawah)
-    [Tooltip("UI Charge Indicator untuk bagian depan")]
-    public ChargeIndikator chargeIndicatorFront;
-    [Tooltip("UI Charge Indicator untuk bagian belakang")]
-    public ChargeIndikator chargeIndicatorBack;
+    public ChargeIndikator chargeIndicator;
 
-
-    // === Variabel Kontrol Internal ===
+    // === Internal Control ===
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool isChargingJump;
-    private float jumpDirection = 0f; 
+    private float jumpDirection = 0f;
     private bool isWallBouncing = false;
     private float wallBounceTimer;
+    private bool isOnIce = false; 
+    private int facingDirection = 1;
 
     private void Start()
     {
@@ -62,132 +55,109 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
 
-        // Stop semua charge indicators saat start
-        StopAllChargeIndicators();
-    }
-    
-    // Helper method untuk start charge di semua indicators
-    private void StartAllChargeIndicators()
-    {
-        // Backward compatibility: jika chargeIndicator di-set, gunakan itu
         if (chargeIndicator != null)
-        {
-            chargeIndicator.StartCharge();
-        }
-        
-        // Gunakan Front dan Back jika di-set
-        if (chargeIndicatorFront != null)
-        {
-            chargeIndicatorFront.StartCharge();
-        }
-        
-        if (chargeIndicatorBack != null)
-        {
-            chargeIndicatorBack.StartCharge();
-        }
-    }
-    
-    // Helper method untuk stop charge di semua indicators
-    private void StopAllChargeIndicators()
-    {
-        // Backward compatibility: jika chargeIndicator di-set, gunakan itu
-        if (chargeIndicator != null)
-        {
             chargeIndicator.StopCharge();
-        }
-        
-        // Gunakan Front dan Back jika di-set
-        if (chargeIndicatorFront != null)
-        {
-            chargeIndicatorFront.StopCharge();
-        }
-        
-        if (chargeIndicatorBack != null)
-        {
-            chargeIndicatorBack.StopCharge();
-        }
-    }
-    
-    // Helper method untuk mendapatkan charge value (prioritas: Front > Back > chargeIndicator lama)
-    private float GetChargeValue()
-    {
-        if (chargeIndicatorFront != null)
-        {
-            return chargeIndicatorFront.GetCurrentChargeValue();
-        }
-        else if (chargeIndicatorBack != null)
-        {
-            return chargeIndicatorBack.GetCurrentChargeValue();
-        }
-        else if (chargeIndicator != null)
-        {
-            return chargeIndicator.GetCurrentChargeValue();
-        }
-        return 0f;
     }
 
     private void Update()
     {
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer | floatingGroundLayer);
+        // --- Ground check ---
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, walkableLayers);
 
+        // --- Reset wall bounce saat di tanah ---
         if (isGrounded && isWallBouncing)
-        {
             isWallBouncing = false;
-        }
 
+        // --- Batalkan charge jika jatuh ---
         if (isChargingJump && !isGrounded)
         {
             isChargingJump = false;
-            StopAllChargeIndicators();
+            if (chargeIndicator != null)
+                chargeIndicator.StopCharge();
         }
 
+        // --- Mulai charge dengan spasi ---
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            float horizontalInput = Input.GetAxisRaw("Horizontal");
-            
-            if (Mathf.Abs(horizontalInput) > 0.1f)
-            {
-                isChargingJump = true;
-                jumpDirection = Mathf.Sign(horizontalInput); 
-                
-                rb.velocity = new Vector2(0, rb.velocity.y);
+            isChargingJump = true;
+            rb.velocity = new Vector2(0, rb.velocity.y);
 
-                StartAllChargeIndicators();
+            // Default arah = arah hadap terakhir
+            jumpDirection = facingDirection;
 
-                if (JumpBar != null)
-                    JumpBar.SetActive(true);
-            }
+            if (chargeIndicator != null)
+                chargeIndicator.StartCharge();
+            if (JumpBar != null)
+                JumpBar.SetActive(true);
         }
 
+        // --- Selama charging, boleh ubah arah ---
+        if (isChargingJump)
+        {
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            if (horizontalInput != 0)
+                jumpDirection = Mathf.Sign(horizontalInput);
+        }
+
+        // --- Lepas spasi untuk lompat ---
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
         {
             PerformJump();
             isChargingJump = false;
 
-            StopAllChargeIndicators();
-
+            if (chargeIndicator != null)
+                chargeIndicator.StopCharge();
             if (JumpBar != null)
                 JumpBar.SetActive(false);
         }
 
+        // --- Update arah hadap player ---
+        if (!isChargingJump && isGrounded && !isWallBouncing)
+        {
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            if (horizontalInput != 0)
+                facingDirection = (int)Mathf.Sign(horizontalInput);
+        }
+
+        // --- Handle wall bounce ---
         HandleWallBounce();
     }
 
     private void FixedUpdate()
     {
+        // Hanya bisa gerak di darat, tidak sedang charge, tidak wall bounce
         if (isGrounded && !isChargingJump && !isWallBouncing)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
-            rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+
+            if (isOnIce)
+            {
+                // ===== Efek licin (momentum inertia) =====
+                float targetSpeed = horizontalInput * moveSpeed;
+                float smoothness = 0.05f; // Semakin kecil => semakin licin
+                float newVelocityX = Mathf.Lerp(rb.velocity.x, targetSpeed, smoothness);
+
+                rb.velocity = new Vector2(newVelocityX, rb.velocity.y);
+
+                // Sedikit terus meluncur walau input dilepas
+                if (Mathf.Abs(horizontalInput) < 0.1f)
+                    rb.velocity = new Vector2(rb.velocity.x * 0.99f, rb.velocity.y);
+            }
+            else
+            {
+                // ===== Gerak normal =====
+                rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
+            }
         }
     }
 
     private void PerformJump()
     {
-        float chargeValue = GetChargeValue();
+        float chargeValue = 0f;
+        if (chargeIndicator != null)
+            chargeValue = chargeIndicator.GetCurrentChargeValue();
 
         float force = Mathf.Lerp(minJumpForce, maxJumpForce, chargeValue);
-        
         force = Mathf.Max(force, minJumpForce * 0.5f);
 
         float angleInRadians = jumpAngle * Mathf.Deg2Rad;
@@ -196,48 +166,30 @@ public class PlayerController : MonoBehaviour
         Vector2 jumpVector = new Vector2(xDir, yDir).normalized;
 
         rb.velocity = Vector2.zero;
-        
-        // Apply jump force
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
     }
 
-    // --- Wall Bounce Logic ---
-    private bool IsOnLeftWall() 
-    { 
-        return Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer); 
-    }
-    
-    private bool IsOnRightWall() 
-    { 
-        return Physics2D.OverlapCircle(rightWallCheck.position, wallCheckDistance, wallLayer); 
-    }
-    
+    // === Wall Bounce ===
+    private bool IsOnLeftWall() => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer);
+    private bool IsOnRightWall() => Physics2D.OverlapCircle(rightWallCheck.position, wallCheckDistance, wallLayer);
+
     private void HandleWallBounce()
     {
         if (isWallBouncing)
         {
             wallBounceTimer -= Time.deltaTime;
-            if (wallBounceTimer <= 0) 
-            { 
-                isWallBouncing = false; 
-            }
+            if (wallBounceTimer <= 0) isWallBouncing = false;
         }
         else
         {
             if (!isGrounded)
             {
-                if (IsOnRightWall() && rb.velocity.x > 0.1f) 
-                { 
-                    StartWallBounce(); 
-                }
-                else if (IsOnLeftWall() && rb.velocity.x < -0.1f) 
-                { 
-                    StartWallBounce(); 
-                }
+                if (IsOnRightWall() && rb.velocity.x > 0.1f) StartWallBounce();
+                else if (IsOnLeftWall() && rb.velocity.x < -0.1f) StartWallBounce();
             }
         }
     }
-    
+
     private void StartWallBounce()
     {
         isWallBouncing = true;
@@ -245,42 +197,50 @@ public class PlayerController : MonoBehaviour
         rb.velocity = new Vector2(-rb.velocity.x * wallBounceStrength, rb.velocity.y * wallBounceDamping);
     }
 
+    // === Deteksi Platform Es (pakai Tag) ===
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "IcePlatform")
+             isOnIce = true;
+    }
+
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "IcePlatform")
+            isOnIce = false;
+    }
+
+    // === Gizmos untuk debugging ===
     private void OnDrawGizmosSelected()
     {
-        // Ground check
-        if (groundCheck != null) 
-        { 
-            Gizmos.color = Color.red; 
-            Gizmos.DrawWireSphere(groundCheck.position, groundRadius); 
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(groundCheck.position, groundRadius);
         }
-        
-        // Wall checks
-        if (leftWallCheck != null) 
-        { 
-            Gizmos.color = Color.blue; 
-            Gizmos.DrawWireSphere(leftWallCheck.position, wallCheckDistance); 
+
+        if (leftWallCheck != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(leftWallCheck.position, wallCheckDistance);
         }
-        if (rightWallCheck != null) 
-        { 
-            Gizmos.color = Color.blue; 
-            Gizmos.DrawWireSphere(rightWallCheck.position, wallCheckDistance); 
+        if (rightWallCheck != null)
+        {
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(rightWallCheck.position, wallCheckDistance);
         }
-        
-        // Jump direction preview (saat charging)
+
         if (isChargingJump && Application.isPlaying)
         {
             Gizmos.color = Color.yellow;
             float angleInRadians = jumpAngle * Mathf.Deg2Rad;
-            
-            // jumpDirection pasti ada value (-1 atau 1)
             float xDir = jumpDirection * Mathf.Cos(angleInRadians);
             float yDir = Mathf.Sin(angleInRadians);
             Vector2 jumpVector = new Vector2(xDir, yDir).normalized;
-            
             Gizmos.DrawRay(transform.position, jumpVector * 3f);
         }
     }
-    
+
     public void DieAndRespawn()
     {
         transform.position = respawnPosition;
@@ -289,7 +249,8 @@ public class PlayerController : MonoBehaviour
         if (isChargingJump)
         {
             isChargingJump = false;
-            StopAllChargeIndicators();
+            if (chargeIndicator != null)
+                chargeIndicator.StopCharge();
             if (JumpBar != null)
                 JumpBar.SetActive(false);
         }
