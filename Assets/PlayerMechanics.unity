@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 49751121}
   - component: {fileID: 49751120}
   m_Layer: 5
-  m_Name: Canvas
+  m_Name: UI_ChargeBar_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -349,7 +349,7 @@ Transform:
   m_GameObject: {fileID: 101510462}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -1.66, y: 10.64, z: 0}
+  m_LocalPosition: {x: -0.4852997, y: 4.5300007, z: 0}
   m_LocalScale: {x: 4.417875, y: 0.811, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -537,6 +537,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chargeBarImage: {fileID: 711946193}
   chargeSpeed: 1.5
+  playerTransform: {fileID: 1797637239}
+  offsetFromPlayer: {x: -1, y: -0.8, z: 0}
+  followPlayer: 1
 --- !u!114 &711946193
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1174,6 +1177,7 @@ GameObject:
   - component: {fileID: 1792626550}
   - component: {fileID: 1792626552}
   - component: {fileID: 1792626551}
+  - component: {fileID: 1792626553}
   m_Layer: 5
   m_Name: Jump Charge Back
   m_TagString: Untagged
@@ -1238,6 +1242,23 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1792626549}
   m_CullTransparentMesh: 1
+--- !u!114 &1792626553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1792626549}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 64375d5e73dcf164ca1ee533de13cba2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chargeBarImage: {fileID: 0}
+  chargeSpeed: 1.5
+  playerTransform: {fileID: 1797637239}
+  offsetFromPlayer: {x: -1, y: -0.8, z: 0}
+  followPlayer: 1
 --- !u!1 &1797637235
 GameObject:
   m_ObjectHideFlags: 0
@@ -1273,8 +1294,8 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0
-  m_GravityScale: 5
+  m_AngularDrag: 0.5
+  m_GravityScale: 4
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -1282,9 +1303,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_Interpolate: 1
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!70 &1797637237
 CapsuleCollider2D:
@@ -1404,8 +1425,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 54692cd1bde2e98418489ff4371e04bd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 50
-  maxJumpForce: 60
+  minJumpForce: 15
+  maxJumpForce: 25
+  jumpAngle: 30
   groundCheck: {fileID: 1313777688}
   groundRadius: 0.2
   groundLayer:
@@ -1415,9 +1437,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   moveSpeed: 5
-  wallBounceStrength: 0.99
-  wallBounceDamping: 0.7
-  wallBounceDuration: 1
+  wallBounceStrength: 1
+  wallBounceDamping: 0.85
+  wallBounceDuration: 0.3
   wallLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1426,6 +1448,8 @@ MonoBehaviour:
   rightWallCheck: {fileID: 1445720058}
   JumpBar: {fileID: 49751119}
   chargeIndicator: {fileID: 711946192}
+  chargeIndicatorFront: {fileID: 0}
+  chargeIndicatorBack: {fileID: 0}
 --- !u!114 &1797637244
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1762,7 +1786,7 @@ Transform:
   m_GameObject: {fileID: 1976123155}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -4.0447, y: 4.2, z: 0}
+  m_LocalPosition: {x: -2.87, y: -1.91, z: 0}
   m_LocalScale: {x: 4.417875, y: 0.811, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2022,7 +2046,7 @@ Transform:
   m_GameObject: {fileID: 2057853040}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 4.73, y: 6.18, z: 0}
+  m_LocalPosition: {x: 5.9047003, y: 0.07000017, z: 0}
   m_LocalScale: {x: 4.417875, y: 0.811, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

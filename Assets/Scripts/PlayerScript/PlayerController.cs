@@ -6,10 +6,12 @@ public class PlayerController : MonoBehaviour
 {
     // === Jump Settings ===
     [Header("Jump Settings")]
-    [Tooltip("Kekuatan lompat saat bar di 0%")]
-    public float jumpForce = 5f; // Ini sekarang jadi lompatan minimum
-    [Tooltip("Kekuatan lompat saat bar di 100%")]
-    public float maxJumpForce = 10f; // Ini lompatan maksimum
+    [Tooltip("Kekuatan lompat minimum (charge 0%)")]
+    public float minJumpForce = 5f;
+    [Tooltip("Kekuatan lompat maksimum (charge 100%)")]
+    public float maxJumpForce = 15f;
+    [Tooltip("Sudut lompatan diagonal (derajat dari horizontal)")]
+    public float jumpAngle = 75f;
     
     public Transform groundCheck;
     public float groundRadius = 0.2f;
@@ -39,13 +41,18 @@ public class PlayerController : MonoBehaviour
 
     // === UI ===
     [Header("UI")]
-    public ChargeIndikator chargeIndicator;
+    public ChargeIndikator chargeIndicator; // Front indicator (deprecated, gunakan array dibawah)
+    [Tooltip("UI Charge Indicator untuk bagian depan")]
+    public ChargeIndikator chargeIndicatorFront;
+    [Tooltip("UI Charge Indicator untuk bagian belakang")]
+    public ChargeIndikator chargeIndicatorBack;
+
 
     // === Variabel Kontrol Internal ===
     private Rigidbody2D rb;
     private bool isGrounded;
     private bool isChargingJump;
-    private float moveInput;
+    private float jumpDirection = 0f; 
     private bool isWallBouncing = false;
     private float wallBounceTimer;
 
@@ -55,55 +62,114 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
 
+        // Stop semua charge indicators saat start
+        StopAllChargeIndicators();
+    }
+    
+    // Helper method untuk start charge di semua indicators
+    private void StartAllChargeIndicators()
+    {
+        // Backward compatibility: jika chargeIndicator di-set, gunakan itu
         if (chargeIndicator != null)
+        {
+            chargeIndicator.StartCharge();
+        }
+        
+        // Gunakan Front dan Back jika di-set
+        if (chargeIndicatorFront != null)
+        {
+            chargeIndicatorFront.StartCharge();
+        }
+        
+        if (chargeIndicatorBack != null)
+        {
+            chargeIndicatorBack.StartCharge();
+        }
+    }
+    
+    // Helper method untuk stop charge di semua indicators
+    private void StopAllChargeIndicators()
+    {
+        // Backward compatibility: jika chargeIndicator di-set, gunakan itu
+        if (chargeIndicator != null)
+        {
             chargeIndicator.StopCharge();
+        }
+        
+        // Gunakan Front dan Back jika di-set
+        if (chargeIndicatorFront != null)
+        {
+            chargeIndicatorFront.StopCharge();
+        }
+        
+        if (chargeIndicatorBack != null)
+        {
+            chargeIndicatorBack.StopCharge();
+        }
+    }
+    
+    // Helper method untuk mendapatkan charge value (prioritas: Front > Back > chargeIndicator lama)
+    private float GetChargeValue()
+    {
+        if (chargeIndicatorFront != null)
+        {
+            return chargeIndicatorFront.GetCurrentChargeValue();
+        }
+        else if (chargeIndicatorBack != null)
+        {
+            return chargeIndicatorBack.GetCurrentChargeValue();
+        }
+        else if (chargeIndicator != null)
+        {
+            return chargeIndicator.GetCurrentChargeValue();
+        }
+        return 0f;
     }
 
     private void Update()
     {
-        // --- Cek Status ---
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer | floatingGroundLayer);
 
-        // --- Perbaikan Sliding di Tanah ---
         if (isGrounded && isWallBouncing)
         {
             isWallBouncing = false;
         }
 
-        // --- Batalkan charge jika jatuh ---
         if (isChargingJump && !isGrounded)
         {
             isChargingJump = false;
-            if (chargeIndicator != null)
-                chargeIndicator.StopCharge();
+            StopAllChargeIndicators();
         }
 
-        // --- Logika Charge Jump ---
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            isChargingJump = true;
-            moveInput = Input.GetAxisRaw("Horizontal");
-            rb.velocity = new Vector2(0, rb.velocity.y);
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            
+            if (Mathf.Abs(horizontalInput) > 0.1f)
+            {
+                isChargingJump = true;
+                jumpDirection = Mathf.Sign(horizontalInput); 
+                
+                rb.velocity = new Vector2(0, rb.velocity.y);
 
-            if (chargeIndicator != null)
-                chargeIndicator.StartCharge();
+                StartAllChargeIndicators();
 
-            JumpBar.SetActive(true);
+                if (JumpBar != null)
+                    JumpBar.SetActive(true);
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
         {
-            Jump();
+            PerformJump();
             isChargingJump = false;
 
-            if (chargeIndicator != null)
-                chargeIndicator.StopCharge();
+            StopAllChargeIndicators();
 
-            JumpBar.SetActive(false);
-            
+            if (JumpBar != null)
+                JumpBar.SetActive(false);
         }
 
-        // --- Logika Wall Bounce ---
         HandleWallBounce();
     }
 
@@ -116,40 +182,62 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void Jump()
+    private void PerformJump()
     {
-        float chargeValue = 0f;
-        if (chargeIndicator != null)
-        {
-            chargeValue = chargeIndicator.GetCurrentChargeValue();
-        }
+        float chargeValue = GetChargeValue();
 
-        float force = Mathf.Lerp(jumpForce, maxJumpForce, chargeValue);
-        rb.velocity = new Vector2(moveInput * moveSpeed, force);
+        float force = Mathf.Lerp(minJumpForce, maxJumpForce, chargeValue);
+        
+        force = Mathf.Max(force, minJumpForce * 0.5f);
+
+        float angleInRadians = jumpAngle * Mathf.Deg2Rad;
+        float xDir = jumpDirection * Mathf.Cos(angleInRadians);
+        float yDir = Mathf.Sin(angleInRadians);
+        Vector2 jumpVector = new Vector2(xDir, yDir).normalized;
+
+        rb.velocity = Vector2.zero;
+        
+        // Apply jump force
+        rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
     }
 
-    // --- (Fungsi WallBounce dan Gizmos lainnya tetap sama) ---
-    private bool IsOnLeftWall() { return Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer); }
-    private bool IsOnRightWall() { return Physics2D.OverlapCircle(rightWallCheck.position, wallCheckDistance, wallLayer); }
+    // --- Wall Bounce Logic ---
+    private bool IsOnLeftWall() 
+    { 
+        return Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer); 
+    }
+    
+    private bool IsOnRightWall() 
+    { 
+        return Physics2D.OverlapCircle(rightWallCheck.position, wallCheckDistance, wallLayer); 
+    }
     
     private void HandleWallBounce()
     {
         if (isWallBouncing)
         {
             wallBounceTimer -= Time.deltaTime;
-            if (wallBounceTimer <= 0) { isWallBouncing = false; }
+            if (wallBounceTimer <= 0) 
+            { 
+                isWallBouncing = false; 
+            }
         }
         else
         {
             if (!isGrounded)
             {
-                if (IsOnRightWall() && rb.velocity.x > 0.1f) { StartWallBounce(); }
-                else if (IsOnLeftWall() && rb.velocity.x < -0.1f) { StartWallBounce(); }
+                if (IsOnRightWall() && rb.velocity.x > 0.1f) 
+                { 
+                    StartWallBounce(); 
+                }
+                else if (IsOnLeftWall() && rb.velocity.x < -0.1f) 
+                { 
+                    StartWallBounce(); 
+                }
             }
         }
     }
     
-    // --- INI FUNGSI YANG DIPERBAIKI (Teks salah sudah dihapus) ---
     private void StartWallBounce()
     {
         isWallBouncing = true;
@@ -159,21 +247,51 @@ public class PlayerController : MonoBehaviour
 
     private void OnDrawGizmosSelected()
     {
-        if (groundCheck != null) { Gizmos.color = Color.red; Gizmos.DrawWireSphere(groundCheck.position, groundRadius); }
-        if (leftWallCheck != null) { Gizmos.color = Color.blue; Gizmos.DrawWireSphere(leftWallCheck.position, wallCheckDistance); }
-        if (rightWallCheck != null) { Gizmos.color = Color.blue; Gizmos.DrawWireSphere(rightWallCheck.position, wallCheckDistance); }
+        // Ground check
+        if (groundCheck != null) 
+        { 
+            Gizmos.color = Color.red; 
+            Gizmos.DrawWireSphere(groundCheck.position, groundRadius); 
+        }
+        
+        // Wall checks
+        if (leftWallCheck != null) 
+        { 
+            Gizmos.color = Color.blue; 
+            Gizmos.DrawWireSphere(leftWallCheck.position, wallCheckDistance); 
+        }
+        if (rightWallCheck != null) 
+        { 
+            Gizmos.color = Color.blue; 
+            Gizmos.DrawWireSphere(rightWallCheck.position, wallCheckDistance); 
+        }
+        
+        // Jump direction preview (saat charging)
+        if (isChargingJump && Application.isPlaying)
+        {
+            Gizmos.color = Color.yellow;
+            float angleInRadians = jumpAngle * Mathf.Deg2Rad;
+            
+            // jumpDirection pasti ada value (-1 atau 1)
+            float xDir = jumpDirection * Mathf.Cos(angleInRadians);
+            float yDir = Mathf.Sin(angleInRadians);
+            Vector2 jumpVector = new Vector2(xDir, yDir).normalized;
+            
+            Gizmos.DrawRay(transform.position, jumpVector * 3f);
+        }
     }
     
     public void DieAndRespawn()
     {
-        // Kembalikan ke posisi awal
         transform.position = respawnPosition;
-
-        // Reset kecepatan
         rb.velocity = Vector2.zero;
 
-        // Anda bisa tambahkan efek suara/visual kematian di sini
-        // Debug.Log("Player terkena trap!");
+        if (isChargingJump)
+        {
+            isChargingJump = false;
+            StopAllChargeIndicators();
+            if (JumpBar != null)
+                JumpBar.SetActive(false);
+        }
     }
-    
 }
