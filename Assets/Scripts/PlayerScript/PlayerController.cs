@@ -253,11 +253,11 @@ public class PlayerController : MonoBehaviour
             isChargingJump = false;
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
-            
+
             // Baris 'if (JumpBar != null)' SUDAH DIHAPUS DARI SINI
         }
     }
-}
+    
     public void SetNewRespawnPoint(Vector3 newPosition)
     {
         // Ganti posisi respawn lama dengan yang baru
@@ -265,3 +265,5 @@ public class PlayerController : MonoBehaviour
         respawnPosition = newPosition;
     }
 }
+    
+
