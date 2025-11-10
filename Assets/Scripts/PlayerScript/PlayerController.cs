@@ -15,8 +15,8 @@ public class PlayerController : MonoBehaviour
     public float groundRadius = 0.2f;
 
     private Vector3 respawnPosition;
-    public LayerMask groundLayer;
-    public LayerMask floatingGroundLayer;
+    [Tooltip("Layer APA SAJA yang bisa diinjak oleh player")]
+    public LayerMask walkableLayers;
 
     // === Movement (Ground Only) ===
     [Header("Movement (Ground Only)")]
@@ -46,7 +46,8 @@ public class PlayerController : MonoBehaviour
     private float jumpDirection = 0f;
     private bool isWallBouncing = false;
     private float wallBounceTimer;
-    private bool isOnIce = false; // <— tambahan: status platform licin
+    private bool isOnIce = false; 
+    private int facingDirection = 1;
 
     private void Start()
     {
@@ -61,7 +62,7 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         // --- Ground check ---
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, groundLayer | floatingGroundLayer);
+        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, walkableLayers);
 
         // --- Reset wall bounce saat di tanah ---
         if (isGrounded && isWallBouncing)
@@ -75,27 +76,30 @@ public class PlayerController : MonoBehaviour
                 chargeIndicator.StopCharge();
         }
 
-        // --- Mulai charge ---
+        // --- Mulai charge dengan spasi ---
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
-            // Begitu tekan spasi, hentikan gerakan
+            isChargingJump = true;
             rb.velocity = new Vector2(0, rb.velocity.y);
 
-            float horizontalInput = Input.GetAxisRaw("Horizontal");
-            if (Mathf.Abs(horizontalInput) > 0.1f)
-            {
-                isChargingJump = true;
-                jumpDirection = Mathf.Sign(horizontalInput);
+            // Default arah = arah hadap terakhir
+            jumpDirection = facingDirection;
 
-                if (chargeIndicator != null)
-                    chargeIndicator.StartCharge();
-
-                if (JumpBar != null)
-                    JumpBar.SetActive(true);
-            }
+            if (chargeIndicator != null)
+                chargeIndicator.StartCharge();
+            if (JumpBar != null)
+                JumpBar.SetActive(true);
         }
 
-        // --- Lepas charge ---
+        // --- Selama charging, boleh ubah arah ---
+        if (isChargingJump)
+        {
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            if (horizontalInput != 0)
+                jumpDirection = Mathf.Sign(horizontalInput);
+        }
+
+        // --- Lepas spasi untuk lompat ---
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
         {
             PerformJump();
@@ -103,9 +107,16 @@ public class PlayerController : MonoBehaviour
 
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
-
             if (JumpBar != null)
                 JumpBar.SetActive(false);
+        }
+
+        // --- Update arah hadap player ---
+        if (!isChargingJump && isGrounded && !isWallBouncing)
+        {
+            float horizontalInput = Input.GetAxisRaw("Horizontal");
+            if (horizontalInput != 0)
+                facingDirection = (int)Mathf.Sign(horizontalInput);
         }
 
         // --- Handle wall bounce ---
