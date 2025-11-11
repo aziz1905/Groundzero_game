@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
     private float wallBounceTimer;
     private bool isOnIce = false; 
     private int facingDirection = 1;
+    private Animator animator;
 
     private void Start()
     {
@@ -57,6 +58,8 @@ public class PlayerController : MonoBehaviour
 
         if (chargeIndicator != null)
             chargeIndicator.StopCharge();
+
+        animator = GetComponent<Animator>();
     }
 
     private void Update()
@@ -121,6 +124,12 @@ public class PlayerController : MonoBehaviour
 
         // --- Handle wall bounce ---
         HandleWallBounce();
+
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
+            animator.SetInteger("Direction", facingDirection);
+        }
     }
 
     private void FixedUpdate()
