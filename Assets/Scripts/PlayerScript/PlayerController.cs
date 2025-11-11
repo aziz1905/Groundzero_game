@@ -32,12 +32,11 @@ public class PlayerController : MonoBehaviour
     public float wallCheckDistance = 0.2f;
     [SerializeField] private Transform leftWallCheck;
     [SerializeField] private Transform rightWallCheck;
-
-    // Variabel [SerializeField] private GameObject JumpBar; TELAH DIHAPUS
     
     // === UI ===
     [Header("UI")]
-    public ChargeIndikator chargeIndicator; // Pastikan ini merujuk ke 'Jump Charge Front'
+    public ChargeIndikator chargeIndicator;
+    [SerializeField] private GameObject jumpBar;
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -48,9 +47,9 @@ public class PlayerController : MonoBehaviour
     private float wallBounceTimer;
     private bool isOnIce = false;
     private int facingDirection = 1;
+    
+    // === Animator ===
     private Animator animator;
-
-    [SerializeField] private GameObject jumpBar;
 
     private void Start()
     {
@@ -79,6 +78,9 @@ public class PlayerController : MonoBehaviour
             isChargingJump = false;
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
+
+            if (animator != null)
+                animator.SetBool("isCharging", false);
         }
 
         // --- Mulai charge dengan spasi ---
@@ -93,9 +95,12 @@ public class PlayerController : MonoBehaviour
             if (chargeIndicator != null)
                 chargeIndicator.StartCharge();
 
-            jumpBar.SetActive(true);
-            
-            // Baris 'if (JumpBar != null)' SUDAH DIHAPUS DARI SINI
+            if (jumpBar != null)
+                jumpBar.SetActive(true);
+
+            // 🔹 Aktifkan animasi charge
+            if (animator != null)
+                animator.SetBool("isCharging", true);
         }
 
         // --- Selama charging, boleh ubah arah ---
@@ -109,15 +114,21 @@ public class PlayerController : MonoBehaviour
         // --- Lepas spasi untuk lompat ---
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
         {
+            if (animator != null)
+            {
+                animator.SetBool("isCharging", false); // 🔹 matikan charge
+                animator.SetInteger("Direction", (int)jumpDirection);
+                animator.SetBool("isJumping", true);   // 🔹 lompat
+            }
+
             PerformJump();
             isChargingJump = false;
 
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
 
-            jumpBar.SetActive(false);
-            
-            // Baris 'if (JumpBar != null)' SUDAH DIHAPUS DARI SINI
+            if (jumpBar != null)
+                jumpBar.SetActive(false);
         }
 
         // --- Update arah hadap player ---
@@ -131,11 +142,8 @@ public class PlayerController : MonoBehaviour
         // --- Handle wall bounce ---
         HandleWallBounce();
 
-        if (animator != null)
-        {
-            animator.SetFloat("Speed", Mathf.Abs(rb.velocity.x));
-            animator.SetInteger("Direction", facingDirection);
-        }
+        // === Update Animator ===
+        UpdateAnimator();
     }
 
     private void FixedUpdate()
@@ -168,8 +176,14 @@ public class PlayerController : MonoBehaviour
 
     private void PerformJump()
     {
-        // Kode ini masih sama, menggunakan maxJumpForce
-        float force = maxJumpForce;
+        float chargeValue = 1f;
+
+        // Ambil nilai charge dari indikator (kalau ada)
+        if (chargeIndicator != null)
+            chargeValue = chargeIndicator.GetCurrentChargeValue();
+
+        // Konversi charge 0–1 jadi kekuatan antara min dan max
+        float force = Mathf.Lerp(minJumpForce, maxJumpForce, chargeValue);
 
         float angleInRadians = jumpAngle * Mathf.Deg2Rad;
         float xDir = jumpDirection * Mathf.Cos(angleInRadians);
@@ -179,6 +193,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
     }
+
 
     // === Wall Bounce ===
     private bool IsOnLeftWall() => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer);
@@ -263,16 +278,33 @@ public class PlayerController : MonoBehaviour
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
 
-            // Baris 'if (JumpBar != null)' SUDAH DIHAPUS DARI SINI
+            if (animator != null)
+                animator.SetBool("isCharging", false);
         }
     }
     
     public void SetNewRespawnPoint(Vector3 newPosition)
     {
-        // Ganti posisi respawn lama dengan yang baru
         Debug.Log("Checkpoint baru ditetapkan di: " + newPosition);
         respawnPosition = newPosition;
     }
-}
-    
 
+    private void UpdateAnimator()
+    {
+        if (animator == null) return;
+
+        float speed = Mathf.Abs(rb.velocity.x);
+        animator.SetFloat("Speed", speed);
+
+        if (isGrounded)
+        {
+            animator.SetInteger("Direction", facingDirection);
+
+            // Reset jumping flag saat mendarat
+            if (Mathf.Abs(rb.velocity.y) < 0.1f)
+            {
+                animator.SetBool("isJumping", false);
+            }
+        }
+    }
+}
