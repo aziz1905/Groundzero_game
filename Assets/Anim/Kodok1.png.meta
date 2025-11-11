@@ -1,5 +1,9 @@
 fileFormatVersion: 2
-guid: 34c9066048015e64a84bcf0137ab338f
+<<<<<<<< HEAD:Assets/Anim/coin1.png.meta
+guid: 1e3a2d5da2881104a8c43d13134c71e9
+========
+guid: f39ada56c2918804c9c2e70554cac4cc
+>>>>>>>> main:Assets/Anim/Kodok1.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -34,7 +38,7 @@ TextureImporter:
   maxTextureSize: 2048
   textureSettings:
     serializedVersion: 2
-    filterMode: 0
+    filterMode: 1
     aniso: 1
     mipBias: 0
     wrapU: 1
@@ -72,7 +76,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
