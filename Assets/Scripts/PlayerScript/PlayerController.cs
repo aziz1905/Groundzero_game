@@ -33,11 +33,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform leftWallCheck;
     [SerializeField] private Transform rightWallCheck;
 
-    [SerializeField] private GameObject JumpBar;
-
+    // Variabel [SerializeField] private GameObject JumpBar; TELAH DIHAPUS
+    
     // === UI ===
     [Header("UI")]
-    public ChargeIndikator chargeIndicator;
+    public ChargeIndikator chargeIndicator; // Pastikan ini merujuk ke 'Jump Charge Front'
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -46,9 +46,11 @@ public class PlayerController : MonoBehaviour
     private float jumpDirection = 0f;
     private bool isWallBouncing = false;
     private float wallBounceTimer;
-    private bool isOnIce = false; 
+    private bool isOnIce = false;
     private int facingDirection = 1;
     private Animator animator;
+
+    [SerializeField] private GameObject jumpBar;
 
     private void Start()
     {
@@ -90,8 +92,10 @@ public class PlayerController : MonoBehaviour
 
             if (chargeIndicator != null)
                 chargeIndicator.StartCharge();
-            if (JumpBar != null)
-                JumpBar.SetActive(true);
+
+            jumpBar.SetActive(true);
+            
+            // Baris 'if (JumpBar != null)' SUDAH DIHAPUS DARI SINI
         }
 
         // --- Selama charging, boleh ubah arah ---
@@ -110,8 +114,10 @@ public class PlayerController : MonoBehaviour
 
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
-            if (JumpBar != null)
-                JumpBar.SetActive(false);
+
+            jumpBar.SetActive(false);
+            
+            // Baris 'if (JumpBar != null)' SUDAH DIHAPUS DARI SINI
         }
 
         // --- Update arah hadap player ---
@@ -162,12 +168,8 @@ public class PlayerController : MonoBehaviour
 
     private void PerformJump()
     {
-        float chargeValue = 0f;
-        if (chargeIndicator != null)
-            chargeValue = chargeIndicator.GetCurrentChargeValue();
-
-        float force = Mathf.Lerp(minJumpForce, maxJumpForce, chargeValue);
-        force = Mathf.Max(force, minJumpForce * 0.5f);
+        // Kode ini masih sama, menggunakan maxJumpForce
+        float force = maxJumpForce;
 
         float angleInRadians = jumpAngle * Mathf.Deg2Rad;
         float xDir = jumpDirection * Mathf.Cos(angleInRadians);
@@ -210,7 +212,7 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "IcePlatform")
-             isOnIce = true;
+            isOnIce = true;
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -260,8 +262,17 @@ public class PlayerController : MonoBehaviour
             isChargingJump = false;
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
-            if (JumpBar != null)
-                JumpBar.SetActive(false);
+
+            // Baris 'if (JumpBar != null)' SUDAH DIHAPUS DARI SINI
         }
     }
+    
+    public void SetNewRespawnPoint(Vector3 newPosition)
+    {
+        // Ganti posisi respawn lama dengan yang baru
+        Debug.Log("Checkpoint baru ditetapkan di: " + newPosition);
+        respawnPosition = newPosition;
+    }
 }
+    
+
