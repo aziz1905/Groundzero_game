@@ -1598,8 +1598,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 41f3f15840277fd499f8a15c8d14d598, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  jumpForce: 5
-  rb: {fileID: 0}
+  jumpForce: 3
+  rb: {fileID: 194050107}
 --- !u!114 &194050105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1613,15 +1613,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   minJumpForce: 10
-  maxJumpForce: 20
-  jumpAngle: 40
-  fallGravityMultiplier: 1.5
+  maxJumpForce: 15
+  jumpAngle: 60
+  fallGravityMultiplier: 5
   groundCheck: {fileID: 53074978}
   groundRadius: 0.2
   walkableLayers:
     serializedVersion: 2
     m_Bits: 328
-  moveSpeed: 5
+  moveSpeed: 4
   wallBounceStrength: 1
   wallBounceDamping: 0.85
   wallBounceDuration: 0.3

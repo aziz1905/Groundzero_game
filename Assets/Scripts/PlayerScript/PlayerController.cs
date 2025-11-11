@@ -78,6 +78,9 @@ public class PlayerController : MonoBehaviour
             isChargingJump = false;
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
+
+            if (animator != null)
+                animator.SetBool("isCharging", false);
         }
 
         // --- Mulai charge dengan spasi ---
@@ -94,6 +97,10 @@ public class PlayerController : MonoBehaviour
 
             if (jumpBar != null)
                 jumpBar.SetActive(true);
+
+            // 🔹 Aktifkan animasi charge
+            if (animator != null)
+                animator.SetBool("isCharging", true);
         }
 
         // --- Selama charging, boleh ubah arah ---
@@ -107,15 +114,13 @@ public class PlayerController : MonoBehaviour
         // --- Lepas spasi untuk lompat ---
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
         {
-            // === SET Direction DAN isJumping SEBELUM lompat ===
             if (animator != null)
             {
-                // Set Direction dulu berdasarkan jumpDirection yang sudah ditentukan
+                animator.SetBool("isCharging", false); // 🔹 matikan charge
                 animator.SetInteger("Direction", (int)jumpDirection);
-                // Baru set isJumping
-                animator.SetBool("isJumping", true);
+                animator.SetBool("isJumping", true);   // 🔹 lompat
             }
-            
+
             PerformJump();
             isChargingJump = false;
 
@@ -171,7 +176,14 @@ public class PlayerController : MonoBehaviour
 
     private void PerformJump()
     {
-        float force = maxJumpForce;
+        float chargeValue = 1f;
+
+        // Ambil nilai charge dari indikator (kalau ada)
+        if (chargeIndicator != null)
+            chargeValue = chargeIndicator.GetCurrentChargeValue();
+
+        // Konversi charge 0–1 jadi kekuatan antara min dan max
+        float force = Mathf.Lerp(minJumpForce, maxJumpForce, chargeValue);
 
         float angleInRadians = jumpAngle * Mathf.Deg2Rad;
         float xDir = jumpDirection * Mathf.Cos(angleInRadians);
@@ -181,6 +193,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
     }
+
 
     // === Wall Bounce ===
     private bool IsOnLeftWall() => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer);
@@ -264,6 +277,9 @@ public class PlayerController : MonoBehaviour
             isChargingJump = false;
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
+
+            if (animator != null)
+                animator.SetBool("isCharging", false);
         }
     }
     
@@ -277,21 +293,18 @@ public class PlayerController : MonoBehaviour
     {
         if (animator == null) return;
 
-        // Update Speed (untuk transisi Idle <-> Walk)
         float speed = Mathf.Abs(rb.velocity.x);
         animator.SetFloat("Speed", speed);
 
-        // Update Direction HANYA saat di tanah (tidak mengubah direction saat jump)
         if (isGrounded)
         {
             animator.SetInteger("Direction", facingDirection);
-            
-            // Reset jumping flag HANYA jika velocity Y sudah mendekati 0 (benar-benar mendarat)
+
+            // Reset jumping flag saat mendarat
             if (Mathf.Abs(rb.velocity.y) < 0.1f)
             {
                 animator.SetBool("isJumping", false);
             }
         }
-        // Saat di udara, JANGAN ubah Direction - biar tetap sesuai arah jump
     }
 }
