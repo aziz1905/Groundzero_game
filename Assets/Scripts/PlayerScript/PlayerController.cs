@@ -272,6 +272,8 @@ public class PlayerController : MonoBehaviour
         transform.position = respawnPosition;
         rb.velocity = Vector2.zero;
 
+        GameManager.Instance.PlayerHasDied();
+
         if (isChargingJump)
         {
             isChargingJump = false;
