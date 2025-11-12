@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     // === UI ===
     [Header("UI")]
     public ChargeIndikator chargeIndicator;
-    [SerializeField] private GameObject chargeBarSprite; // Tambahan: reference ke ChargeBarSprite
+    [SerializeField] private GameObject jumpBar; // <-- Variabel ini masih ada
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -56,6 +56,9 @@ public class PlayerController : MonoBehaviour
         respawnPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
+
+        if (chargeIndicator != null)
+            chargeIndicator.StopCharge();
 
         animator = GetComponent<Animator>();
     }
@@ -78,10 +81,6 @@ public class PlayerController : MonoBehaviour
 
             if (animator != null)
                 animator.SetBool("isCharging", false);
-
-            // MATIKAN CHARGE BAR SPRITE jika jatuh
-            if (chargeBarSprite != null)
-                chargeBarSprite.SetActive(false);
         }
 
         // --- Mulai charge dengan spasi ---
@@ -96,13 +95,10 @@ public class PlayerController : MonoBehaviour
             if (chargeIndicator != null)
                 chargeIndicator.StartCharge();
 
-            // AKTIFKAN CHARGE BAR SPRITE
-            if (chargeBarSprite != null)
-            {
-                chargeBarSprite.SetActive(true);
-            }
+            // if (jumpBar != null)
+            //     jumpBar.SetActive(true); // <-- BARIS INI SUDAH DIHAPUS
 
-            // Aktifkan animasi charge
+            // 🔹 Aktifkan animasi charge
             if (animator != null)
                 animator.SetBool("isCharging", true);
         }
@@ -120,9 +116,9 @@ public class PlayerController : MonoBehaviour
         {
             if (animator != null)
             {
-                animator.SetBool("isCharging", false);
+                animator.SetBool("isCharging", false); // 🔹 matikan charge
                 animator.SetInteger("Direction", (int)jumpDirection);
-                animator.SetBool("isJumping", true);
+                animator.SetBool("isJumping", true);   // 🔹 lompat
             }
 
             PerformJump();
@@ -131,11 +127,8 @@ public class PlayerController : MonoBehaviour
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
 
-            // MATIKAN CHARGE BAR SPRITE
-            if (chargeBarSprite != null)
-            {
-                chargeBarSprite.SetActive(false);
-            }
+            // if (jumpBar != null)
+            //     jumpBar.SetActive(false); // <-- BARIS INI SUDAH DIHAPUS
         }
 
         // --- Update arah hadap player ---
@@ -200,6 +193,7 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
     }
+
 
     // === Wall Bounce ===
     private bool IsOnLeftWall() => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer);
@@ -278,7 +272,7 @@ public class PlayerController : MonoBehaviour
         transform.position = respawnPosition;
         rb.velocity = Vector2.zero;
 
-        GameManager.Instance.PlayerHasDied();
+        // GameManager.Instance.PlayerHasDied(); // Saya komen, mungkin Anda belum punya GameManager
 
         if (isChargingJump)
         {
@@ -287,14 +281,7 @@ public class PlayerController : MonoBehaviour
                 chargeIndicator.StopCharge();
 
             if (animator != null)
-            {
                 animator.SetBool("isCharging", false);
-                animator.SetBool("isJumping", false);
-            }
-
-            // MATIKAN CHARGE BAR SPRITE saat respawn
-            if (chargeBarSprite != null)
-                chargeBarSprite.SetActive(false);
         }
     }
     
@@ -311,7 +298,7 @@ public class PlayerController : MonoBehaviour
         float speed = Mathf.Abs(rb.velocity.x);
         animator.SetFloat("Speed", speed);
 
-        if (isGrounded && !isChargingJump)
+        if (isGrounded)
         {
             animator.SetInteger("Direction", facingDirection);
 
