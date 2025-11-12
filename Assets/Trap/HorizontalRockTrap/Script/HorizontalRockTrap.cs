@@ -1,50 +1,90 @@
 using System.Collections;
+using System.Collections.Generic; // <-- Penting untuk List
 using UnityEngine;
 
-public class HorizontalRockTrap : MonoBehaviour
+// Skrip ini sekarang mewarisi dari Induk (BaseResettableTrap)
+public class HorizontalRockTrap : ResetTraps 
 {
-    [SerializeField] private GameObject rockObject;
-    [SerializeField] private float moveSpeed = 10f; // Kecepatan batu meluncur
+    [Header("Pengaturan Unik Trap Ini")]
+    [Tooltip("Prefab batu yang akan di-spawn")]
+    [SerializeField] private GameObject rockPrefab; 
+    
+    [Tooltip("Titik di mana batu akan di-spawn")]
+    [SerializeField] private Transform spawnPoint; 
+
+    [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float destroyDelay = 4f; // Waktu sebelum batu hancur
 
-    private bool hasBeenTriggered = false;
+    // List untuk melacak semua batu yang sudah di-spawn oleh trap ini
+    private List<GameObject> spawnedRocks = new List<GameObject>();
 
-    private void OnTriggerEnter2D(Collider2D other)
+    // Kita tidak perlu Start() lagi, Induk sudah mengurusnya.
+    
+    // --- Ini adalah logika unik untuk trap ini ---
+    // (Apa yang terjadi saat trap AKTIF?)
+    protected override IEnumerator ActivateTrapLogic()
     {
-        if (other.CompareTag("Player") && !hasBeenTriggered)
+        // 1. Tentukan posisi spawn
+        // (Jika 'spawnPoint' tidak di-set, pakai posisi trigger)
+        Vector3 pos = (spawnPoint != null) ? spawnPoint.position : transform.position;
+
+        // 2. Buat (Instantiate) batu baru dari prefab
+        GameObject newRock = Instantiate(rockPrefab, pos, Quaternion.identity);
+        
+        // 3. Tambahkan batu baru ke list (agar bisa di-reset)
+        spawnedRocks.Add(newRock); 
+
+        // 4. Ambil Rigidbody-nya dan luncurkan
+        Rigidbody2D rockRb = newRock.GetComponent<Rigidbody2D>();
+        if (rockRb != null)
         {
-            hasBeenTriggered = true;
-            
-            // Nonaktifkan trigger ini
-            GetComponent<Collider2D>().enabled = false;
-
-            // Aktifkan batu
-            if (rockObject != null)
-            {
-                rockObject.SetActive(true);
-                Rigidbody2D rockRb = rockObject.GetComponent<Rigidbody2D>();
-                if (rockRb != null)
-                {
-                    rockRb.isKinematic = false;
-                    // Beri kecepatan horizontal (ke kanan)
-                    // Ganti 'moveSpeed' jadi '-moveSpeed' jika ingin ke kiri
-                    rockRb.velocity = new Vector2(moveSpeed, 0); 
-                }
-
-                // Hancurkan batu setelah beberapa detik
-                StartCoroutine(DestroyObject(rockObject, destroyDelay));
-            }
+            rockRb.isKinematic = false;
+            rockRb.velocity = new Vector2(moveSpeed, 0); // Logika unik Anda!
         }
+        else
+        {
+            Debug.LogError("Rock Prefab tidak punya Rigidbody2D!", rockPrefab);
+        }
+
+        // 5. Hancurkan batu itu setelah 'destroyDelay'
+        // (Kita juga akan hapus dari list saat hancur agar rapi)
+        StartCoroutine(DestroyAndRemoveRock(newRock, destroyDelay));
+
+        yield return null; 
     }
 
-    private IEnumerator DestroyObject(GameObject obj, float delay)
+    // --- Ini adalah logika unik untuk trap ini ---
+    // (Apa yang terjadi saat di-RESET?)
+    protected override void ResetTrapLogic()
+    {
+        // Hancurkan semua batu yang MASIH ADA
+        foreach (GameObject rock in spawnedRocks)
+        {
+            if (rock != null) // Cek jika belum hancur
+            {
+                Destroy(rock);
+            }
+        }
+        
+        // Kosongkan list
+        spawnedRocks.Clear();
+    }
+
+    // --- Fungsi Helper ---
+    private IEnumerator DestroyAndRemoveRock(GameObject rock, float delay)
     {
         yield return new WaitForSeconds(delay);
-        if (obj != null)
+        
+        // Hapus dari list (jika masih ada)
+        if (spawnedRocks.Contains(rock))
         {
-            Destroy(obj);
+            spawnedRocks.Remove(rock);
         }
-        // Hancurkan trigger ini juga
-        Destroy(gameObject);
+        
+        // Hancurkan batu
+        if (rock != null)
+        {
+            Destroy(rock);
+        }
     }
 }
