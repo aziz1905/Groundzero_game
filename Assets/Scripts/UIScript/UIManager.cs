@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour
     [Header("UI Elements")]
     [Tooltip("Drag objek TextMeshPro nyawa ke sini")]
     [SerializeField] private TextMeshProUGUI livesText;
+    [SerializeField] private TextMeshProUGUI livesText2;
 
     // (Opsional) Anda bisa taruh panel Game Over di sini
     // [SerializeField] private GameObject gameOverPanel;

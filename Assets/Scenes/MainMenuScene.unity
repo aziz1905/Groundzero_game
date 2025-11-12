@@ -3836,7 +3836,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "Programmer\r\n-Irfan\r\n-Zilan\r\n-Anggara\r\n-Dimas\r\n\r\nArtist\r\nAziz\r\n\nGameDesign\r\n-Irfan\r\n\nTechnicalArtist\r\n-Irfan\r"
+  m_text: "Programmer\r\n-Irfan\r\n-Zilan\r\n-Anggara\r\n-Dimas\r\n\r\nArtist\r\n-Aziz\n-Aden\n-Dimas\r\n\nGameDesign\r\n-Irfan\r\n\nTechnicalArtist\r\n-Irfan\r"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 00486d672454c3b4b9252906f22c9968, type: 2}
   m_sharedMaterial: {fileID: 1465713869092572876, guid: 00486d672454c3b4b9252906f22c9968, type: 2}
@@ -3863,8 +3863,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
