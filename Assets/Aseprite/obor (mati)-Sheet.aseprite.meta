@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a8903c25e9d346b4b9fd4b9053251053
+guid: 56be0eda38659314eb4e56ee354da680
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -36,7 +36,7 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 64
+    spritePixelsToUnits: 100
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638984756091504503
+  platformSettingsDirtyTick: 0
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -122,18 +122,18 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Frame_0
+  - name: obor (mati)-Sheet
     originalName: 
-    pivot: {x: 0.5031846, y: 0.7990859}
+    pivot: {x: 0.5037313, y: -0.95}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 33
-      height: 26
-    spriteID: 149951f30c984aa43ad5c99b5930a951
+      width: 268
+      height: 20
+    spriteID: 8e20593612d2b8b4bb1d5e3ebc77aff7
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -141,59 +141,30 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 4}
-  - name: Frame_1
-    originalName: 
-    pivot: {x: 0.5099208, y: 0.7972098}
-    alignment: 9
-    border: {x: 0, y: 0, z: 0, w: 0}
-    rect:
-      serializedVersion: 2
-      x: 4
-      y: 38
-      width: 33
-      height: 26
-    spriteID: 06af41b9495d1164285b165783e50537
-    spriteBone: []
-    spriteOutline: []
-    vertices: []
-    spritePhysicsOutline: []
-    indices: 
-    edges: []
-    tessellationDetail: 0
-    uvTransform: {x: 4, y: 38}
+    uvTransform: {x: -21, y: -15}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 2274348382
+      value0: 1067637152
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: KodokCharge
+    name: obor (mati)-Sheet
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Frame_0
+    - name: obor (mati)-Sheet
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 16
-        y: 17
-        width: 33
-        height: 26
-      spriteId: 149951f30c984aa43ad5c99b5930a951
-    - name: Frame_1
-      frameIndex: 1
-      additiveSortOrder: 0
-      cellRect:
-        x: 16
-        y: 17
-        width: 33
-        height: 26
-      spriteId: 06af41b9495d1164285b165783e50537
+        x: 0
+        y: 0
+        width: 320
+        height: 64
+      spriteId: 8e20593612d2b8b4bb1d5e3ebc77aff7
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -209,44 +180,8 @@ ScriptedImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     androidETC2FallbackOverride: 0
-  - name: DefaultTexturePlatform
-    overridden: 0
-    ignorePlatformSupport: 0
-    maxTextureSize: 16384
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    androidETC2FallbackOverride: 0
-  - name: Standalone
-    overridden: 0
-    ignorePlatformSupport: 0
-    maxTextureSize: 16384
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    androidETC2FallbackOverride: 0
-  - name: WebGL
-    overridden: 0
-    ignorePlatformSupport: 0
-    maxTextureSize: 16384
-    resizeAlgorithm: 0
-    textureFormat: -1
-    textureCompression: 0
-    compressionQuality: 50
-    forceMaximumCompressionQuality_BC6H_BC7: 0
-    crunchedCompression: 0
-    allowsAlphaSplitting: 0
-    androidETC2FallbackOverride: 0
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-  canvasSize: {x: 64, y: 64}
-  previousTextureSize: {x: 64, y: 128}
+  canvasSize: {x: 320, y: 64}
+  previousTextureSize: {x: 512, y: 32}
