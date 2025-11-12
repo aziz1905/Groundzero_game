@@ -3,76 +3,121 @@ using UnityEngine;
 
 public class FallingRockTrap : MonoBehaviour
 {
-    // 1. Masukkan objek Batu (Rock) Anda ke sini lewat Inspector
-    [SerializeField] private GameObject rockObject;
-
-    // 2. Atur berapa lama batu akan hancur setelah aktif (misal: 5 detik)
-    [SerializeField] private float rockDestroyDelay = 5f;
-
-    // 3. Variabel untuk memastikan trap hanya aktif sekali
+    [SerializeField] private GameObject rockObject; // Objek Duri/Batu
+    [SerializeField] private float activeTime = 5f; // Waktu sebelum duri/batu otomatis reset
+    
     private bool hasBeenTriggered = false;
-
-    // 4. Kita simpan referensi ke collider trigger ini
     private Collider2D trapCollider;
+
+    // --- Variabel baru untuk Reset ---
+    private Rigidbody2D rockRb;
+    private Vector3 originalRockPosition;
+    private Coroutine activeCoroutine; // Untuk melacak coroutine
+    // ---------------------------------
+
+    // === TAMBAHAN: DENGARKAN GAME MANAGER ===
+    private void OnEnable()
+    {
+        // Daftarkan 'ResetTrap' ke sinyal GameManager
+        GameManager.OnPlayerRespawn += ResetTrap;
+    }
+
+    private void OnDisable()
+    {
+        // Berhenti langganan sinyal (penting)
+        GameManager.OnPlayerRespawn -= ResetTrap;
+    }
+    // =======================================
 
     private void Start()
     {
-        // Ambil komponen collider dari objek trigger INI
         trapCollider = GetComponent<Collider2D>();
-
-        // Pastikan Anda sudah menonaktifkan batu (rock) di awal permainan
-        // (Anda bisa lakukan ini manual di Inspector)
-        // if (rockObject != null)
-        // {
-        //     rockObject.SetActive(false); 
-        // }
+        
+        // Simpan info awal dari duri/batu
+        if (rockObject != null)
+        {
+            rockRb = rockObject.GetComponent<Rigidbody2D>();
+            originalRockPosition = rockObject.transform.position; 
+        }
+        
+        // Atur ke kondisi awal saat game dimulai
+        ResetTrap(); 
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Cek apakah yang masuk adalah Player DAN trap ini belum aktif
+        // Cek player & pastikan belum aktif
         if (collision.CompareTag("Player") && !hasBeenTriggered)
         {
-            // === LANGKAH 1: MENCEGAH BUG ===
-            // Langsung tandai & matikan collider agar tidak bisa ter-trigger lagi
             hasBeenTriggered = true;
-            trapCollider.enabled = false; // Ini bekerja instan!
+            trapCollider.enabled = false; // Matikan trigger
 
-            // === LANGKAH 2: AKTIFKAN BATU ===
+            // Aktifkan batu/duri
             if (rockObject != null)
             {
-                // Aktifkan batu (misalnya membuatnya terlihat dan jatuh)
                 rockObject.SetActive(true);
-
-                // (Opsional) Jika batu Anda pakai Rigidbody2D untuk jatuh:
-                Rigidbody2D rockRb = rockObject.GetComponent<Rigidbody2D>();
                 if (rockRb != null)
                 {
-                    // Set 'Is Kinematic' ke false agar batu mulai jatuh kena gravitasi
-                    rockRb.isKinematic = false;
+                    rockRb.isKinematic = false; // Jatuhkan
                 }
             }
             
-            // === LANGKAH 3: JALANKAN COROUTINE ===
-            // Mulai hitung mundur untuk menghancurkan batu
-            StartCoroutine(DestroyRockAfterDelay());
+            // Mulai coroutine (bukan untuk hancur, tapi untuk reset otomatis)
+            activeCoroutine = StartCoroutine(ResetObjectAfterDelay());
         }
     }
 
-    // === LANGKAH 4: COROUTINE (JEDA WAKTU) ===
-    private IEnumerator DestroyRockAfterDelay()
+    // --- FUNGSI DIUBAH TOTAL ---
+    // Coroutine ini sekarang menyembunyikan, bukan menghancurkan
+    private IEnumerator ResetObjectAfterDelay()
     {
-        // "Tunggu selama 'rockDestroyDelay' detik"
-        yield return new WaitForSeconds(rockDestroyDelay);
+        yield return new WaitForSeconds(activeTime);
 
-        // "Setelah selesai menunggu, hancurkan objek BATU"
+        // Sembunyikan batu/duri
         if (rockObject != null)
         {
-            Destroy(rockObject);
+            rockObject.SetActive(false);
+            if (rockRb != null)
+            {
+                rockRb.isKinematic = true; // Hentikan fisika
+                rockRb.velocity = Vector2.zero; // Reset kecepatan
+            }
+            rockObject.transform.position = originalRockPosition; // Kembalikan ke posisi awal
+        }
+    }
+    // ----------------------------
+
+    // === FUNGSI RESET UTAMA ===
+    // Fungsi ini dipanggil oleh GameManager SAAT PLAYER MATI
+    private void ResetTrap()
+    {
+        // 1. Hentikan coroutine 'ResetObjectAfterDelay' (jika sedang berjalan)
+        if (activeCoroutine != null)
+        {
+            StopCoroutine(activeCoroutine);
+            activeCoroutine = null;
         }
 
-        // (Opsional tapi rapi) Hancurkan juga objek TRAP TRIGGER ini
-        // karena tugasnya sudah selesai.
-        Destroy(gameObject); // 'gameObject' di sini adalah si objek trigger
+        // 2. Kembalikan semua variabel ke kondisi awal
+        hasBeenTriggered = false;
+        
+        if (trapCollider != null)
+        {
+            trapCollider.enabled = true; // Nyalakan lagi collider trigger
+        }
+
+        // 3. Kembalikan batu/duri ke kondisi awal
+        if (rockObject != null)
+        {
+            rockObject.SetActive(false); // Sembunyikan lagi
+            if (rockRb != null)
+            {
+                rockRb.isKinematic = true; // Matikan gravitasi
+                rockRb.velocity = Vector2.zero;
+            }
+            // Kembalikan ke posisi awal
+            rockObject.transform.position = originalRockPosition; 
+        }
     }
+    // ============================
 }

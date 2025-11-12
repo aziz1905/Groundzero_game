@@ -9,7 +9,7 @@ public class BiomeTitleTrigger : MonoBehaviour
 
     // 2. Tulis nama biome yang akan muncul
     [SerializeField] private string biomeName;
-    
+
     // 3. Atur durasi
     [SerializeField] private float fadeInTime = 1f;  // Waktu untuk muncul
     [SerializeField] private float stayTime = 3f;    // Waktu tampil di layar
@@ -19,13 +19,16 @@ public class BiomeTitleTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
+
+        // Cek apakah itu Player
         if (other.CompareTag("Player") && !hasBeenTriggered)
         {
-            hasBeenTriggered = true;
-            // Nonaktifkan collider agar tidak ter-trigger lagi
-            GetComponent<Collider2D>().enabled = false; 
+            // --- TAMBAHKAN INI (Tes #2) ---
+            Debug.LogWarning("PLAYER TERDETEKSI! Memulai Coroutine...");
+            // ---------------------------------
 
-            // Mulai Coroutine-nya
+            hasBeenTriggered = true;
+            GetComponent<Collider2D>().enabled = false;
             StartCoroutine(ShowTitleFade());
         }
     }

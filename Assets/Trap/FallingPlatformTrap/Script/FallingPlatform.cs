@@ -1,42 +1,115 @@
 using System.Collections;
 using UnityEngine;
 
-public class FallingPlatform : MonoBehaviour
+// Pastikan nama file ini 'FallingLeaf.cs' atau sesuai
+public class FallingLeaf : MonoBehaviour
 {
-    [SerializeField] private float fallDelay = 1f; // Jeda sebelum jatuh
-    [SerializeField] private float destroyDelay = 3f; // Waktu sebelum hancur
+    [Header("Timing")]
+    [SerializeField] private float triggerDelay = 1f; // Ganti nama dari fallDelay
 
-    private bool isFalling = false;
+    [Header("Visuals")]
+    [SerializeField] private Sprite triggeredSprite; // <-- Masukkan sprite ke-2 (layu) di sini
+    private Sprite originalSprite; // Untuk menyimpan sprite asli
+
+    // --- Komponen ---
+    private SpriteRenderer spriteRenderer;
+    private Collider2D c2d;
+    // Kita tidak perlu Rigidbody2D lagi
+
+    // --- Kontrol State ---
+    private bool hasBeenTriggered = false;
+    private Coroutine activeCoroutine; // Untuk melacak coroutine
+
+    // === MENDENGARKAN SINYAL RESET DARI GAMEMANAGER ===
+    private void OnEnable()
+    {
+        GameManager.OnPlayerRespawn += ResetTrap;
+    }
+
+    private void OnDisable()
+    {
+        GameManager.OnPlayerRespawn -= ResetTrap;
+    }
+    // ===============================================
+
+    private void Start()
+    {
+        // Ambil komponen
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        c2d = GetComponent<Collider2D>();
+        
+        // Simpan sprite asli saat game dimulai
+        if (spriteRenderer != null)
+        {
+            originalSprite = spriteRenderer.sprite;
+        }
+
+        // Panggil ResetTrap() di awal untuk state yang benar
+        ResetTrap();
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Player") && !isFalling)
+        if (collision.gameObject.CompareTag("Player") && !hasBeenTriggered)
         {
             // Cek jika player mendarat di atas
             if (collision.contacts[0].normal.y < -0.5) 
             {
-                StartCoroutine(Fall());
+                // Mulai coroutine dan simpan
+                activeCoroutine = StartCoroutine(BecomeTrigger());
             }
         }
     }
 
-    private IEnumerator Fall()
+    // --- COROUTINE INI SUDAH DIUBAH ---
+    private IEnumerator BecomeTrigger()
     {
-        isFalling = true;
+        hasBeenTriggered = true;
 
         // (Opsional) Tambahkan efek goyang (shake) di sini
 
-        yield return new WaitForSeconds(fallDelay);
-
-        // Matikan kinematic agar platform jatuh kena gravitasi
-        Rigidbody2D rb = GetComponent<Rigidbody2D>();
-        if (rb != null)
+        // 1. UBAH SPRITE
+        if (spriteRenderer != null && triggeredSprite != null)
         {
-            rb.isKinematic = false;
+            spriteRenderer.sprite = triggeredSprite;
         }
 
-        // Hancurkan platform setelah beberapa detik
-        yield return new WaitForSeconds(destroyDelay);
-        Destroy(gameObject);
+        // 2. TUNGGU JEDA
+        yield return new WaitForSeconds(triggerDelay);
+
+        // 3. JADI TRIGGER (BUKAN JATUH)
+        if (c2d != null)
+        {
+            c2d.isTrigger = true;
+        }
+
+        // 4. JANGAN HANCUR
+        // (Baris Destroy(gameObject) dihapus)
+    }
+
+    // === FUNGSI RESET UNTUK GAMEMANAGER ===
+    private void ResetTrap()
+    {
+        // Hentikan coroutine jika sedang berjalan (misal player mati saat daun goyang)
+        if (activeCoroutine != null)
+        {
+            StopCoroutine(activeCoroutine);
+            activeCoroutine = null;
+        }
+
+        // Kembalikan semua ke kondisi awal
+        hasBeenTriggered = false;
+        
+        // Kembalikan sprite asli
+        if (spriteRenderer != null && originalSprite != null)
+        {
+            spriteRenderer.sprite = originalSprite;
+        }
+
+        // Kembalikan collider jadi solid
+        if (c2d != null)
+        {
+            c2d.isTrigger = false;
+        }
     }
 }
