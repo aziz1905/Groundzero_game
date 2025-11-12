@@ -5,8 +5,17 @@ using UnityEngine.UI;
 
 public class ChargeIndikator : MonoBehaviour
 {
+    [Header("Charge Bar Mode")]
+    [Tooltip("TRUE = pakai sprite frames animation | FALSE = pakai fill bar")]
+    [SerializeField] private bool useAnimatedSprite = true;
+    
+    [Header("Fill Bar Settings (jika useAnimatedSprite = false)")]
     [SerializeField] private Image chargeBarImage; 
     [SerializeField] private float chargeSpeed = 1.5f;
+    
+    [Header("Sprite Animation Settings (jika useAnimatedSprite = true)")]
+    [SerializeField] private Image spriteRenderer; 
+    [SerializeField] private Sprite[] chargeFrames;
     
     [Header("Follow Player Settings")]
     [SerializeField] private Transform playerTransform; 
@@ -16,43 +25,85 @@ public class ChargeIndikator : MonoBehaviour
     private float currentFill;
     private bool isCharging = false;
     private RectTransform rectTransform;
-    private Camera mainCamera;
     private Coroutine hideCoroutine;
+    
+    // === VARIABEL BARU UNTUK MENYIMPAN KAMERA ===
+    private Camera mainCamera;
+    private Canvas parentCanvas;
 
     void Awake()
     {
         rectTransform = GetComponent<RectTransform>();
-        if (mainCamera == null) mainCamera = Camera.main;
-        
-        if (chargeBarImage != null)
+        parentCanvas = GetComponentInParent<Canvas>();
+        if (parentCanvas == null)
+        {
+            Debug.LogError("ChargeIndikator: TIDAK BISA MENEMUKAN CANVAS INDUK!");
+        }
+
+        if (!useAnimatedSprite && chargeBarImage != null)
         {
             chargeBarImage.type = Image.Type.Filled;
             chargeBarImage.fillMethod = Image.FillMethod.Vertical;
             chargeBarImage.fillOrigin = (int)Image.OriginVertical.Bottom;
         }
+        
+        if (!useAnimatedSprite && spriteRenderer != null) spriteRenderer.gameObject.SetActive(false);
+        if (useAnimatedSprite && chargeBarImage != null) chargeBarImage.gameObject.SetActive(false);
     }
     
     void Start()
     {
-        if (mainCamera == null) mainCamera = Camera.main;
-        InitializePlayerReference();
-        if (offsetFromPlayer.x > 0) offsetFromPlayer.x = -Mathf.Abs(offsetFromPlayer.x);
+        // === PAKSA CARI PLAYER DAN KAMERA ===
+        Debug.Log("ChargeIndikator: Start() - Memulai pencarian paksa...");
         
-        gameObject.SetActive(false); // Mulai dalam keadaan mati
-    }
-    
-    void InitializePlayerReference()
-    {
-        if (playerTransform == null)
+        // 1. Cari Player
+        GameObject playerObj = GameObject.FindGameObjectWithTag("Player");
+        if (playerObj != null)
         {
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            if (player != null) playerTransform = player.transform;
-            else
+            playerTransform = playerObj.transform;
+            Debug.Log("ChargeIndikator: Start() - Player ditemukan via Tag 'Player'");
+        }
+        else
+        {
+            PlayerController pc = FindObjectOfType<PlayerController>();
+            if (pc != null)
             {
-                PlayerController playerController = FindObjectOfType<PlayerController>();
-                if (playerController != null) playerTransform = playerController.transform;
+                playerTransform = pc.transform;
+                Debug.Log("ChargeIndikator: Start() - Player ditemukan via FindObjectOfType<PlayerController>");
             }
         }
+        
+        if (playerTransform == null)
+        {
+            Debug.LogError("ChargeIndikator: FATAL ERROR! TIDAK BISA MENEMUKAN PLAYER. Pastikan Player ada di Scene dan memiliki Tag 'Player'.");
+        }
+
+        // 2. Cari Kamera
+        if (Camera.main != null)
+        {
+            mainCamera = Camera.main;
+            Debug.Log($"ChargeIndikator: Start() - Kamera ditemukan via Camera.main (Tag: {mainCamera.tag})");
+        }
+        else
+        {
+            Debug.LogError("ChargeIndikator: FATAL ERROR! Camera.main adalah null. Pastikan kamera Anda memiliki Tag 'MainCamera'.");
+            // Fallback, cari kamera apa saja
+            mainCamera = FindObjectOfType<Camera>();
+            if (mainCamera != null)
+            {
+                Debug.LogWarning($"ChargeIndikator: Menemukan kamera fallback (Nama: {mainCamera.name}), tapi Tag 'MainCamera' tidak ada.");
+            }
+            else
+            {
+                Debug.LogError("ChargeIndikator: FATAL ERROR! TIDAK ADA KAMERA SAMA SEKALI DI SCENE.");
+            }
+        }
+        // === AKHIR PENCARIAN ===
+
+        if (offsetFromPlayer.x > 0) offsetFromPlayer.x = -Mathf.Abs(offsetFromPlayer.x);
+        
+        if (useAnimatedSprite && spriteRenderer != null) spriteRenderer.gameObject.SetActive(false);
+        if (!useAnimatedSprite && chargeBarImage != null) chargeBarImage.gameObject.SetActive(false);
     }
     
     void Update()
@@ -64,106 +115,108 @@ public class ChargeIndikator : MonoBehaviour
             if (currentFill < 1f)
             {
                 currentFill += chargeSpeed * Time.deltaTime;
-                currentFill = Mathf.Clamp(currentFill, 0f, 1f); 
-                if (chargeBarImage != null)
-                    chargeBarImage.fillAmount = currentFill;
+                currentFill = Mathf.Clamp(currentFill, 0f, 1f);
+                
+                if (useAnimatedSprite) UpdateSpriteFrame();
+                else if (chargeBarImage != null) chargeBarImage.fillAmount = currentFill;
             }
         }
         
-        if (followPlayer && playerTransform != null)
+        // Panggil UpdatePosition setiap frame
+        if (followPlayer)
         {
             UpdatePosition();
         }
     }
 
+    void UpdateSpriteFrame()
+    {
+        if (spriteRenderer == null || chargeFrames == null || chargeFrames.Length == 0) return;
+        
+        int frameIndex = Mathf.FloorToInt(currentFill * chargeFrames.Length);
+        frameIndex = Mathf.Clamp(frameIndex, 0, chargeFrames.Length - 1);
+        spriteRenderer.sprite = chargeFrames[frameIndex];
+    }
+
+    // === INI FUNGSI YANG DIPERBAIKI (LAGI) ===
     void UpdatePosition()
     {
-        if (playerTransform == null)
+        // Cek semua referensi penting. Jika salah satu null, jangan lakukan apa-apa.
+        if (playerTransform == null || rectTransform == null || parentCanvas == null || mainCamera == null)
         {
-            InitializePlayerReference();
-            if (playerTransform == null) return;
+            // Kita log sekali saja agar tidak spam
+            if(playerTransform == null) Debug.LogWarning("UpdatePosition: playerTransform is NULL");
+            if(mainCamera == null) Debug.LogWarning("UpdatePosition: mainCamera is NULL");
+            return;
         }
-        if (rectTransform == null)
-        {
-            rectTransform = GetComponent<RectTransform>();
-            if (rectTransform == null) return;
-        }
-        if (mainCamera == null)
-        {
-            mainCamera = Camera.main;
-            if (mainCamera == null) return;
-        }
+
+        Vector3 worldPos = playerTransform.position + offsetFromPlayer;
+        Vector3 screenPos = mainCamera.WorldToScreenPoint(worldPos);
         
-        Vector3 offset = offsetFromPlayer;
-        if (offset.x > 0) offset.x = -Mathf.Abs(offset.x);
+        RectTransform canvasRect = parentCanvas.GetComponent<RectTransform>();
+        Vector2 canvasPos;
         
-        Vector3 worldPos = playerTransform.position + offset;
-        Vector2 screenPos = mainCamera.WorldToScreenPoint(worldPos);
-        rectTransform.position = screenPos;
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            canvasRect, 
+            screenPos, 
+            parentCanvas.renderMode == RenderMode.ScreenSpaceOverlay ? null : mainCamera, 
+            out canvasPos
+        );
+        
+
+        rectTransform.anchoredPosition = canvasPos;
     }
 
     public void StartCharge()
     {
-        if (hideCoroutine != null)
-        {
-            StopCoroutine(hideCoroutine);
-            hideCoroutine = null;
-        }
-
-        InitializePlayerReference();
-        if (mainCamera == null) mainCamera = Camera.main;
-        if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
+        if (hideCoroutine != null) StopCoroutine(hideCoroutine);
         
         isCharging = true;
+        currentFill = 0.0f;
         
-        // ==========================================================
-        // === PERUBAHAN DI SINI ===
-        // ==========================================================
-        // Jangan atur ke 0, tapi ke nilai kecil agar langsung terlihat
-        currentFill = 0.01f; 
-        
-        if (chargeBarImage != null)
+        if (useAnimatedSprite)
         {
-            chargeBarImage.type = Image.Type.Filled;
-            chargeBarImage.fillMethod = Image.FillMethod.Vertical;
-            chargeBarImage.fillOrigin = (int)Image.OriginVertical.Bottom;
-            chargeBarImage.fillAmount = currentFill; // Atur ke nilai kecil
-        }
-        // ==========================================================
-        
-        gameObject.SetActive(true); 
-        
-        if (followPlayer && playerTransform != null)
-        {
-            if (mainCamera == null) mainCamera = Camera.main;
-            if (rectTransform == null) rectTransform = GetComponent<RectTransform>();
-            if (mainCamera != null && rectTransform != null)
+            if (spriteRenderer != null)
             {
-                UpdatePosition();
+                spriteRenderer.gameObject.SetActive(true);
+                if (chargeFrames != null && chargeFrames.Length > 0)
+                {
+                    spriteRenderer.sprite = chargeFrames[0];
+                }
             }
+            if (chargeBarImage != null) chargeBarImage.gameObject.SetActive(false);
         }
+        else
+        {
+            if (chargeBarImage != null)
+            {
+                chargeBarImage.gameObject.SetActive(true);
+                chargeBarImage.fillAmount = currentFill;
+            }
+            if (spriteRenderer != null) spriteRenderer.gameObject.SetActive(false);
+        }
+        
+        // Panggil sekali agar posisi langsung benar
+        UpdatePosition();
     }
 
     public void StopCharge()
     {
         isCharging = false;
         
-        if (!gameObject.activeSelf) // Fix error coroutine
-        {
-            return; 
-        }
+        if (!gameObject.activeSelf) return; 
+        if (hideCoroutine != null) StopCoroutine(hideCoroutine);
         
-        if (hideCoroutine != null)
-        {
-            StopCoroutine(hideCoroutine);
-        }
         hideCoroutine = StartCoroutine(HideAfterRenderFrame());
     }
 
     private IEnumerator HideAfterRenderFrame()
     {
-        yield return null; // Tunggu 1 frame
-        gameObject.SetActive(false); 
+        yield return null; 
+        
+        if (useAnimatedSprite && spriteRenderer != null) spriteRenderer.gameObject.SetActive(false);
+        if (!useAnimatedSprite && chargeBarImage != null) chargeBarImage.gameObject.SetActive(false);
+        
         hideCoroutine = null;
     }
 
