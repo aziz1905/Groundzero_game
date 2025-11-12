@@ -15,6 +15,9 @@ public class EndingCutscene : MonoBehaviour
     [SerializeField] private GameObject promptUI;
     [SerializeField] private Text promptText;
     [SerializeField] private Image fadePanel;
+
+    [Header("Audio")] // <-- BARIS BARU
+    [SerializeField] private AudioClip eatSound; // <-- BARIS BARU
     
     [Header("Camera Settings")]
     [SerializeField] private float targetZoom = 3f;
@@ -30,6 +33,7 @@ public class EndingCutscene : MonoBehaviour
     private bool waitingForInput = false;
     private float originalCameraSize;
     private PlayerController playerController;
+    private AudioSource playerAudioSource; // <-- BARIS BARU
 
     void Start()
     {
@@ -43,6 +47,7 @@ public class EndingCutscene : MonoBehaviour
         {
             playerController = player.GetComponent<PlayerController>();
             playerAnimator = player.GetComponent<Animator>();
+            playerAudioSource = player.GetComponent<AudioSource>(); // <-- BARIS BARU (Ambil AudioSource dari player)
         }
         
         if (legendaryFly != null && flyAnimator == null)
@@ -147,6 +152,12 @@ public class EndingCutscene : MonoBehaviour
             playerAnimator.ResetTrigger("Eat");
             playerAnimator.SetTrigger("Eat");
             Debug.Log("Playing Eat animation...");
+
+            // 🎵 Mainkan suara makan di sini
+            if (playerAudioSource != null && eatSound != null) // <-- BLOK BARU
+            {
+                playerAudioSource.PlayOneShot(eatSound);
+            }
         }
 
         yield return null; // beri 1 frame supaya animator masuk ke state Eat

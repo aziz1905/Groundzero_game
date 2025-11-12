@@ -2,6 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Menambahkan AudioSource ke RequireComponent agar otomatis ada
+[RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))] // <-- BARIS BARU
 public class PlayerController : MonoBehaviour
 {
     // === Jump Settings ===
@@ -36,7 +38,13 @@ public class PlayerController : MonoBehaviour
     // === UI ===
     [Header("UI")]
     public ChargeIndikator chargeIndicator;
-    [SerializeField] private GameObject jumpBar; // <-- Variabel ini masih ada
+    [SerializeField] private GameObject jumpBar; 
+
+    // === Audio === // <-- BLOK BARU
+    [Header("Audio")]
+    public AudioClip jumpSound;
+    public AudioClip landSound;
+    public AudioClip wallHitSound;
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -51,6 +59,9 @@ public class PlayerController : MonoBehaviour
     // === Animator ===
     private Animator animator;
 
+    // === Audio === // <-- BARIS BARU
+    private AudioSource myAudioSource;
+
     private void Start()
     {
         respawnPosition = transform.position;
@@ -61,12 +72,26 @@ public class PlayerController : MonoBehaviour
             chargeIndicator.StopCharge();
 
         animator = GetComponent<Animator>();
+
+        // Ambil komponen AudioSource saat mulai
+        myAudioSource = GetComponent<AudioSource>(); // <-- BARIS BARU
     }
 
     private void Update()
     {
         // --- Ground check ---
+        bool wasGrounded = isGrounded; // <-- BARIS BARU (Simpan state frame lalu)
         isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, walkableLayers);
+
+        // --- Cek jika BARU mendarat --- // <-- BLOK BARU
+        if (isGrounded && !wasGrounded)
+        {
+            // Hanya bersuara jika mendarat (bukan baru spawn)
+            if (rb.velocity.y < -0.1f) 
+            {
+                myAudioSource.PlayOneShot(landSound);
+            }
+        }
 
         // --- Reset wall bounce saat di tanah ---
         if (isGrounded && isWallBouncing)
@@ -95,9 +120,6 @@ public class PlayerController : MonoBehaviour
             if (chargeIndicator != null)
                 chargeIndicator.StartCharge();
 
-            // if (jumpBar != null)
-            //     jumpBar.SetActive(true); // <-- BARIS INI SUDAH DIHAPUS
-
             // 🔹 Aktifkan animasi charge
             if (animator != null)
                 animator.SetBool("isCharging", true);
@@ -118,7 +140,7 @@ public class PlayerController : MonoBehaviour
             {
                 animator.SetBool("isCharging", false); // 🔹 matikan charge
                 animator.SetInteger("Direction", (int)jumpDirection);
-                animator.SetBool("isJumping", true);   // 🔹 lompat
+                animator.SetBool("isJumping", true);   // 🔹 lompat
             }
 
             PerformJump();
@@ -126,9 +148,6 @@ public class PlayerController : MonoBehaviour
 
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
-
-            // if (jumpBar != null)
-            //     jumpBar.SetActive(false); // <-- BARIS INI SUDAH DIHAPUS
         }
 
         // --- Update arah hadap player ---
@@ -192,6 +211,9 @@ public class PlayerController : MonoBehaviour
 
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
+
+        // 🎵 Mainkan suara loncat
+        myAudioSource.PlayOneShot(jumpSound); // <-- BARIS BARU
     }
 
 
@@ -221,6 +243,9 @@ public class PlayerController : MonoBehaviour
         isWallBouncing = true;
         wallBounceTimer = wallBounceDuration;
         rb.velocity = new Vector2(-rb.velocity.x * wallBounceStrength, rb.velocity.y * wallBounceDamping);
+
+        // 🎵 Mainkan suara bentur tembok
+        myAudioSource.PlayOneShot(wallHitSound); // <-- BARIS BARU
     }
 
     // === Deteksi Platform Es (pakai Tag) ===
