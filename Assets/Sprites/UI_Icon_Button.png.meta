@@ -529,6 +529,48 @@ TextureImporter:
       indices: 
       edges: []
       weights: []
+    - serializedVersion: 2
+      name: UI_Icon_Button_20
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c69365334343e2b4bb894d018b4c064e
+      internalID: -43961137
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: UI_Icon_Button_21
+      rect:
+        serializedVersion: 2
+        x: 64
+        y: 0
+        width: 64
+        height: 64
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 866062021a87fa7458f6368eccd4cd94
+      internalID: -1436890020
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -553,6 +595,8 @@ TextureImporter:
       UI_Icon_Button_18: 548680110
       UI_Icon_Button_19: -1034233666
       UI_Icon_Button_2: 1167506682
+      UI_Icon_Button_20: -43961137
+      UI_Icon_Button_21: -1436890020
       UI_Icon_Button_3: 967611770
       UI_Icon_Button_4: -1804626718
       UI_Icon_Button_5: 71439735

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 47a3889cf9b1ec14998ec7c00e1f562e
+guid: 2b9eebb2416b55443b3fe40180bece9d
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 638984688515785819
+  platformSettingsDirtyTick: 638984907674600825
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -124,16 +124,16 @@ ScriptedImporter:
   animatedSpriteImportData:
   - name: Platform
     originalName: 
-    pivot: {x: 0.4895833, y: -1.574468}
+    pivot: {x: 0.48041776, y: -1.2314814}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 384
-      height: 94
-    spriteID: 4509bad18c7446c47938e15afc850ca7
+      width: 383
+      height: 108
+    spriteID: 7a528a90bb0f1244696598ef8c87e1ea
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -160,11 +160,11 @@ ScriptedImporter:
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 12
-        y: 148
-        width: 384
-        height: 94
-      spriteId: 4509bad18c7446c47938e15afc850ca7
+        x: 16
+        y: 133
+        width: 383
+        height: 108
+      spriteId: 7a528a90bb0f1244696598ef8c87e1ea
     linkedCells: []
     parentIndex: -1
   platformSettings:

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Anim/Kodok1.png.meta
+guid: f39ada56c2918804c9c2e70554cac4cc
+========
 guid: 1e3a2d5da2881104a8c43d13134c71e9
+>>>>>>>> feature/level-design:Assets/Anim/coin1.png.meta
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}

@@ -9,6 +9,7 @@ TagManager:
   - Floating Ground
   - 'IcePlatform '
   - StageCamera
+  - EndingTrigger
   layers:
   - Default
   - TransparentFX
