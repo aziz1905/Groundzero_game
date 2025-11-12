@@ -1,74 +1,53 @@
 using UnityEngine;
 
+// Pastikan objek Anda punya Animator!
+[RequireComponent(typeof(Animator))] 
 public class Checkpoint : MonoBehaviour
 {
-    // Variabel static untuk melacak checkpoint mana yang sedang aktif
     public static Checkpoint activeCheckpoint;
+    private Animator anim;  // Komponen Animator
 
-    // Sprite untuk status aktif dan nonaktif
-    [SerializeField] private Sprite activeSprite;
-    [SerializeField] private Sprite inactiveSprite;
+    [Header("Audio")]
+    [SerializeField] private AudioClip activationSound;
+    private AudioSource audioSource;
 
-    private SpriteRenderer spriteRenderer;
     private bool isActivated = false;
 
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        // Mulai dalam keadaan nonaktif
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sprite = inactiveSprite;
-        }
+        anim = GetComponent<Animator>(); 
+        audioSource = GetComponent<AudioSource>();
+        if (audioSource == null) audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
     }
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        // Cek apakah itu player DAN checkpoint ini belum aktif
         if (other.CompareTag("Player") && !isActivated)
         {
-            // 1. Dapatkan skrip player
-            PlayerController player = other.GetComponent<PlayerController>();
+            PlayerController player = other.GetComponent<PlayerController>(); 
             if (player != null)
             {
-                // 2. Beri tahu player posisi respawn baru
                 player.SetNewRespawnPoint(transform.position);
-
-                // 3. Matikan checkpoint LAMA (jika ada)
-                if (activeCheckpoint != null)
-                {
-                    activeCheckpoint.Deactivate();
-                }
-
-                // 4. Aktifkan checkpoint INI
+                if (activeCheckpoint != null) activeCheckpoint.Deactivate();
                 Activate();
             }
         }
     }
 
-    // Fungsi untuk mengaktifkan checkpoint ini
     private void Activate()
     {
         isActivated = true;
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sprite = activeSprite;
-        }
-
-        // Set checkpoint ini sebagai yang aktif secara global
+        // Beri tahu Animator untuk MENYALA
+        anim.SetBool("isActivated", true); 
         activeCheckpoint = this;
-        
-        // (Opsional) Putar suara atau partikel
-        // audioSource.Play();
+        if (activationSound != null) audioSource.PlayOneShot(activationSound);
     }
 
-    // Fungsi PUBLIC agar bisa dipanggil oleh checkpoint lain
     public void Deactivate()
     {
         isActivated = false;
-        if (spriteRenderer != null)
-        {
-            spriteRenderer.sprite = inactiveSprite;
-        }
+        // Beri tahu Animator untuk MATI
+        anim.SetBool("isActivated", false);
     }
 }
