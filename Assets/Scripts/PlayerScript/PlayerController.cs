@@ -36,7 +36,7 @@ public class PlayerController : MonoBehaviour
     // === UI ===
     [Header("UI")]
     public ChargeIndikator chargeIndicator;
-    [SerializeField] private GameObject jumpBar;
+    [SerializeField] private GameObject chargeBarSprite; // Tambahan: reference ke ChargeBarSprite
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -56,9 +56,6 @@ public class PlayerController : MonoBehaviour
         respawnPosition = transform.position;
         rb = GetComponent<Rigidbody2D>();
         rb.freezeRotation = true;
-
-        if (chargeIndicator != null)
-            chargeIndicator.StopCharge();
 
         animator = GetComponent<Animator>();
     }
@@ -81,6 +78,10 @@ public class PlayerController : MonoBehaviour
 
             if (animator != null)
                 animator.SetBool("isCharging", false);
+
+            // MATIKAN CHARGE BAR SPRITE jika jatuh
+            if (chargeBarSprite != null)
+                chargeBarSprite.SetActive(false);
         }
 
         // --- Mulai charge dengan spasi ---
@@ -95,10 +96,13 @@ public class PlayerController : MonoBehaviour
             if (chargeIndicator != null)
                 chargeIndicator.StartCharge();
 
-            if (jumpBar != null)
-                jumpBar.SetActive(true);
+            // AKTIFKAN CHARGE BAR SPRITE
+            if (chargeBarSprite != null)
+            {
+                chargeBarSprite.SetActive(true);
+            }
 
-            // 🔹 Aktifkan animasi charge
+            // Aktifkan animasi charge
             if (animator != null)
                 animator.SetBool("isCharging", true);
         }
@@ -116,9 +120,9 @@ public class PlayerController : MonoBehaviour
         {
             if (animator != null)
             {
-                animator.SetBool("isCharging", false); // 🔹 matikan charge
+                animator.SetBool("isCharging", false);
                 animator.SetInteger("Direction", (int)jumpDirection);
-                animator.SetBool("isJumping", true);   // 🔹 lompat
+                animator.SetBool("isJumping", true);
             }
 
             PerformJump();
@@ -127,8 +131,11 @@ public class PlayerController : MonoBehaviour
             if (chargeIndicator != null)
                 chargeIndicator.StopCharge();
 
-            if (jumpBar != null)
-                jumpBar.SetActive(false);
+            // MATIKAN CHARGE BAR SPRITE
+            if (chargeBarSprite != null)
+            {
+                chargeBarSprite.SetActive(false);
+            }
         }
 
         // --- Update arah hadap player ---
@@ -193,7 +200,6 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
     }
-
 
     // === Wall Bounce ===
     private bool IsOnLeftWall() => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer);
@@ -281,7 +287,14 @@ public class PlayerController : MonoBehaviour
                 chargeIndicator.StopCharge();
 
             if (animator != null)
+            {
                 animator.SetBool("isCharging", false);
+                animator.SetBool("isJumping", false);
+            }
+
+            // MATIKAN CHARGE BAR SPRITE saat respawn
+            if (chargeBarSprite != null)
+                chargeBarSprite.SetActive(false);
         }
     }
     
@@ -298,7 +311,7 @@ public class PlayerController : MonoBehaviour
         float speed = Mathf.Abs(rb.velocity.x);
         animator.SetFloat("Speed", speed);
 
-        if (isGrounded)
+        if (isGrounded && !isChargingJump)
         {
             animator.SetInteger("Direction", facingDirection);
 
