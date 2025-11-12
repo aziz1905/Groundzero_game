@@ -15,9 +15,11 @@ public class EndingCutscene : MonoBehaviour
     [SerializeField] private GameObject promptUI;
     [SerializeField] private Text promptText;
     [SerializeField] private Image fadePanel;
+    [SerializeField] private GameObject thankYouText; // GameObject dengan Text component
 
-    [Header("Audio")] // <-- BARIS BARU
-    [SerializeField] private AudioClip eatSound; // <-- BARIS BARU
+    [Header("Audio")]
+    [SerializeField] private AudioClip eatSound;
+    [SerializeField] private float eatSoundDelay = 0.2f; // Delay SFX (bisa disesuaikan di Inspector)
     
     [Header("Camera Settings")]
     [SerializeField] private float targetZoom = 3f;
@@ -33,7 +35,7 @@ public class EndingCutscene : MonoBehaviour
     private bool waitingForInput = false;
     private float originalCameraSize;
     private PlayerController playerController;
-    private AudioSource playerAudioSource; // <-- BARIS BARU
+    private AudioSource playerAudioSource;
 
     void Start()
     {
@@ -47,7 +49,7 @@ public class EndingCutscene : MonoBehaviour
         {
             playerController = player.GetComponent<PlayerController>();
             playerAnimator = player.GetComponent<Animator>();
-            playerAudioSource = player.GetComponent<AudioSource>(); // <-- BARIS BARU (Ambil AudioSource dari player)
+            playerAudioSource = player.GetComponent<AudioSource>();
         }
         
         if (legendaryFly != null && flyAnimator == null)
@@ -58,6 +60,10 @@ public class EndingCutscene : MonoBehaviour
         // Hide UI di awal
         if (promptUI != null)
             promptUI.SetActive(false);
+        
+        // Hide Thank You text di awal
+        if (thankYouText != null)
+            thankYouText.SetActive(false);
         
         // Setup fade panel
         if (fadePanel != null)
@@ -152,18 +158,21 @@ public class EndingCutscene : MonoBehaviour
             playerAnimator.ResetTrigger("Eat");
             playerAnimator.SetTrigger("Eat");
             Debug.Log("Playing Eat animation...");
+        }
 
-            // 🎵 Mainkan suara makan di sini
-            if (playerAudioSource != null && eatSound != null) // <-- BLOK BARU
-            {
-                playerAudioSource.PlayOneShot(eatSound);
-            }
+        // 4. Delay lalu mainkan SFX
+        yield return new WaitForSeconds(eatSoundDelay);
+        
+        if (playerAudioSource != null && eatSound != null)
+        {
+            playerAudioSource.PlayOneShot(eatSound);
+            Debug.Log("Playing eat sound");
         }
 
         yield return null; // beri 1 frame supaya animator masuk ke state Eat
 
-        // 4. Ambil durasi animasi Eat dari clip
-        float eatDuration = 2f; // fallback
+        // 5. Ambil durasi animasi Eat dari clip
+        float eatDuration = 1f; // fallback
         if (playerAnimator != null)
         {
             AnimatorClipInfo[] clips = playerAnimator.GetCurrentAnimatorClipInfo(0);
@@ -174,20 +183,24 @@ public class EndingCutscene : MonoBehaviour
             }
         }
 
-        // 5. Tunggu sampai mendekati akhir animasi (0.9x durasi)
-        yield return new WaitForSeconds(eatDuration * 0.9f);
+        // 6. Tunggu sampai mendekati akhir animasi (disesuaikan dengan SFX delay)
+        float adjustedWait = (eatDuration * 0.9f) - eatSoundDelay;
+        if (adjustedWait > 0)
+        {
+            yield return new WaitForSeconds(adjustedWait);
+        }
 
-        // 6. Destroy lalat sedikit sebelum animasi berakhir
+        // 7. Destroy lalat sedikit sebelum animasi berakhir
         if (legendaryFly != null)
         {
             Destroy(legendaryFly);
             Debug.Log("Fly destroyed right before Eat animation ended");
         }
 
-        // 7. Tunggu sisa animasi biar halus
-        yield return new WaitForSeconds(eatDuration * 0.53f);
+        // 8. Tunggu sisa animasi biar halus
+        yield return new WaitForSeconds(eatDuration * 0.4f);
 
-        // 8. Freeze player di frame terakhir (biar gak balik idle)
+        // 9. Freeze player di frame terakhir (biar gak balik idle)
         if (playerAnimator != null)
         {
             playerAnimator.Update(0);
@@ -195,15 +208,14 @@ public class EndingCutscene : MonoBehaviour
             Debug.Log("Player animator frozen at last frame");
         }
 
-        // 9. Delay kecil sebelum fade
+        // 10. Delay kecil sebelum fade
         yield return new WaitForSeconds(delayBeforeDestroy);
 
-        // 10. Fade to black
+        // 11. Fade to black
         yield return StartCoroutine(FadeToBlack());
 
         Debug.Log("Ending Complete! Fade done.");
     }
-
 
     IEnumerator CameraZoomAndMove(Vector3 targetPosition, float targetSize, float duration)
     {
@@ -230,22 +242,62 @@ public class EndingCutscene : MonoBehaviour
     IEnumerator FadeToBlack()
     {
         if (fadePanel == null)
+        {
+            Debug.LogWarning("Fade panel not assigned!");
             yield break;
+        }
 
         float elapsed = 0f;
-        Color c = fadePanel.color;
+        Color fadeColor = fadePanel.color;
+        
+        // Setup Thank You text
+        Text thankYouTextComponent = null;
+        Color textColor = Color.white;
+        
+        if (thankYouText != null)
+        {
+            thankYouText.SetActive(true);
+            thankYouTextComponent = thankYouText.GetComponent<Text>();
+            
+            if (thankYouTextComponent != null)
+            {
+                textColor = thankYouTextComponent.color;
+                textColor.a = 0f;
+                thankYouTextComponent.color = textColor;
+            }
+        }
 
+        // Fade to black + fade in text
         while (elapsed < fadeOutDuration)
         {
             elapsed += Time.deltaTime;
             float t = elapsed / fadeOutDuration;
-            c.a = Mathf.Lerp(0f, 1f, t);
-            fadePanel.color = c;
+            
+            // Fade panel ke hitam
+            fadeColor.a = Mathf.Lerp(0f, 1f, t);
+            fadePanel.color = fadeColor;
+            
+            // Fade in Thank You text (mulai muncul di 30% fade)
+            if (thankYouTextComponent != null)
+            {
+                float textT = Mathf.Clamp01((t - 0.3f) / 0.7f);
+                textColor.a = Mathf.Lerp(0f, 1f, textT);
+                thankYouTextComponent.color = textColor;
+            }
+            
             yield return null;
         }
 
-        c.a = 1f;
-        fadePanel.color = c;
+        // Pastikan full opacity
+        fadeColor.a = 1f;
+        fadePanel.color = fadeColor;
+        
+        if (thankYouTextComponent != null)
+        {
+            textColor.a = 1f;
+            thankYouTextComponent.color = textColor;
+        }
+
         Debug.Log("Fade to black complete");
     }
 }
