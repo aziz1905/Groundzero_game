@@ -21,7 +21,7 @@ public class MainMenuManager : MonoBehaviour
     public void StartGame()
     {
         // Ganti "Level_1" dengan nama scene game Anda
-        SceneManager.LoadScene("Level_1");
+        SceneManager.LoadScene("Design-Level");
 
         float initialVolume = 1.0f;
 
