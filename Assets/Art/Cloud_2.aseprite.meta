@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
 guid: 7e56820ed0d708542b9809546da9719c
+========
+guid: 5eae60ab65f42de4d9c2be3c48582bc4
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,18 +126,30 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
   - name: Cloud_2
     originalName: 
     pivot: {x: 0.5, y: 0}
+========
+  - name: Frame_0
+    originalName: 
+    pivot: {x: 0.5261044, y: -0.39999998}
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
       y: 4
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
       width: 1024
       height: 490
     spriteID: c296d6e455d8034438f35dd26216813c
+========
+      width: 249
+      height: 165
+    spriteID: 9523de0ab74d92b44b4b4a14bd2c4b96
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -142,20 +158,132 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 4, y: 4}
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
+========
+  - name: Frame_1
+    originalName: 
+    pivot: {x: 0.5261044, y: -0.39999998}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 261
+      y: 4
+      width: 249
+      height: 165
+    spriteID: e4ed257cdc7893947a63b9be8cc938ef
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 261, y: 4}
+  - name: Frame_2
+    originalName: 
+    pivot: {x: 0.5261044, y: -0.39999998}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 518
+      y: 4
+      width: 249
+      height: 165
+    spriteID: 365c5f9763ef1e24591cea1357af40bc
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 518, y: 4}
+  - name: Frame_3
+    originalName: 
+    pivot: {x: 0.5261044, y: -0.39999998}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 4
+      y: 177
+      width: 249
+      height: 165
+    spriteID: 87609d97379ee0243a5506b65a5ba154
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 4, y: 177}
+  - name: Frame_4
+    originalName: 
+    pivot: {x: 0.5261044, y: -0.39999998}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 261
+      y: 177
+      width: 249
+      height: 165
+    spriteID: 7f68f162d32d8834ebc2411cb7de8d07
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 261, y: 177}
+  - name: Frame_5
+    originalName: 
+    pivot: {x: 0.5261044, y: -0.39999998}
+    alignment: 9
+    border: {x: 0, y: 0, z: 0, w: 0}
+    rect:
+      serializedVersion: 2
+      x: 518
+      y: 177
+      width: 249
+      height: 165
+    spriteID: 06be73033fd391c45bc55dede96203b8
+    spriteBone: []
+    spriteOutline: []
+    vertices: []
+    spritePhysicsOutline: []
+    indices: 
+    edges: []
+    tessellationDetail: 0
+    uvTransform: {x: 518, y: 177}
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
       value0: 2548089486
+========
+      value0: 271027328
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
       value1: 0
       value2: 0
       value3: 0
     guid: 0
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
     name: Cloud_2
+========
+    name: Judul
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
     - name: Cloud_2
       frameIndex: 0
       additiveSortOrder: 0
@@ -165,6 +293,62 @@ ScriptedImporter:
         width: 1024
         height: 490
       spriteId: c296d6e455d8034438f35dd26216813c
+========
+    - name: Frame_0
+      frameIndex: 0
+      additiveSortOrder: 0
+      cellRect:
+        x: 69
+        y: 66
+        width: 249
+        height: 165
+      spriteId: 9523de0ab74d92b44b4b4a14bd2c4b96
+    - name: Frame_1
+      frameIndex: 1
+      additiveSortOrder: 0
+      cellRect:
+        x: 69
+        y: 66
+        width: 249
+        height: 165
+      spriteId: e4ed257cdc7893947a63b9be8cc938ef
+    - name: Frame_2
+      frameIndex: 2
+      additiveSortOrder: 0
+      cellRect:
+        x: 69
+        y: 66
+        width: 249
+        height: 165
+      spriteId: 365c5f9763ef1e24591cea1357af40bc
+    - name: Frame_3
+      frameIndex: 3
+      additiveSortOrder: 0
+      cellRect:
+        x: 69
+        y: 66
+        width: 249
+        height: 165
+      spriteId: 87609d97379ee0243a5506b65a5ba154
+    - name: Frame_4
+      frameIndex: 4
+      additiveSortOrder: 0
+      cellRect:
+        x: 69
+        y: 66
+        width: 249
+        height: 165
+      spriteId: 7f68f162d32d8834ebc2411cb7de8d07
+    - name: Frame_5
+      frameIndex: 5
+      additiveSortOrder: 0
+      cellRect:
+        x: 69
+        y: 66
+        width: 249
+        height: 165
+      spriteId: 06be73033fd391c45bc55dede96203b8
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -183,5 +367,10 @@ ScriptedImporter:
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
+<<<<<<<< HEAD:Assets/Art/Cloud_2.aseprite.meta
   canvasSize: {x: 1024, y: 490}
   previousTextureSize: {x: 2048, y: 512}
+========
+  canvasSize: {x: 400, y: 254}
+  previousTextureSize: {x: 1024, y: 512}
+>>>>>>>> dimas:Assets/Aseprite/Judul.aseprite.meta
