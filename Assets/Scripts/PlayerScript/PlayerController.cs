@@ -32,7 +32,7 @@ public class PlayerController : MonoBehaviour
     public float wallCheckDistance = 0.2f;
     [SerializeField] private Transform leftWallCheck;
     [SerializeField] private Transform rightWallCheck;
-    
+
     // === UI ===
     [Header("UI")]
     public ChargeIndikator chargeIndicator;
@@ -47,7 +47,7 @@ public class PlayerController : MonoBehaviour
     private float wallBounceTimer;
     private bool isOnIce = false;
     private int facingDirection = 1;
-    
+
     // === Animator ===
     private Animator animator;
 
@@ -269,11 +269,12 @@ public class PlayerController : MonoBehaviour
 
     public void DieAndRespawn()
     {
-        transform.position = respawnPosition;
-        rb.velocity = Vector2.zero;
+        // Hanya panggil GameManager, jangan lakukan apa-apa lagi
+        GameManager.Instance.StartDeathSequence();
 
-        // GameManager.Instance.PlayerHasDied(); // Saya komen, mungkin Anda belum punya GameManager
+        // (GameManager.Instance.PlayerHasDied() dari skrip lama Anda dihapus)
 
+        // Hentikan charge jika sedang charge (ini boleh tetap ada)
         if (isChargingJump)
         {
             isChargingJump = false;
@@ -284,7 +285,17 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isCharging", false);
         }
     }
-    
+
+    // (Tambahkan fungsi baru ini di mana saja di dalam class PlayerController)
+
+    // Fungsi ini dipanggil oleh GameManager saat layar sudah hitam
+    public void RespawnAtCheckpoint()
+    {
+        // Ini adalah kode LAMA dari DieAndRespawn()
+        transform.position = respawnPosition;
+        rb.velocity = Vector2.zero;
+    }
+
     public void SetNewRespawnPoint(Vector3 newPosition)
     {
         Debug.Log("Checkpoint baru ditetapkan di: " + newPosition);

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class RockFalling : MonoBehaviour
+public class DeathTraps : MonoBehaviour
 {
     // Pastikan objek trap ini punya Collider2D dengan "Is Trigger" = true
 

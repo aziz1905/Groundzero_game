@@ -225,8 +225,8 @@ ScriptedImporter:
   spriteSheetImportData:
   - name: jamur_0
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.50858736, y: 0.15807503}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -245,8 +245,8 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: jamur_1
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.5000001, y: 0.23140049}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -265,8 +265,8 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: jamur_2
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.49380738, y: 0.16385157}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -285,8 +285,8 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: jamur_3
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.50333947, y: 0.21268098}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
@@ -305,8 +305,8 @@ ScriptedImporter:
     uvTransform: {x: 0, y: 0}
   - name: jamur_4
     originalName: 
-    pivot: {x: 0.5, y: 0.5}
-    alignment: 0
+    pivot: {x: 0.4944956, y: 0.21407273}
+    alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2

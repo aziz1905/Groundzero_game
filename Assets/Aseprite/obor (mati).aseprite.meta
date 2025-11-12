@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 56be0eda38659314eb4e56ee354da680
+guid: 1ab90abf0a5dbb04a828f33e9c9a3837
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -36,7 +36,7 @@ ScriptedImporter:
     spriteMeshType: 1
     alignment: 0
     spritePivot: {x: 0.5, y: 0.5}
-    spritePixelsToUnits: 100
+    spritePixelsToUnits: 45
     spriteBorder: {x: 0, y: 0, z: 0, w: 0}
     spriteGenerateFallbackPhysicsShape: 0
     generateCubemap: 6
@@ -98,7 +98,7 @@ ScriptedImporter:
     addSortingGroup: 1
     addShadowCasters: 0
   importFileNodeState: 1
-  platformSettingsDirtyTick: 0
+  platformSettingsDirtyTick: 638985832041343809
   textureAssetName: 
   singleSpriteImportData:
   - name: 
@@ -122,18 +122,18 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: obor (mati)-Sheet
+  - name: Frame_0
     originalName: 
-    pivot: {x: 0.5037313, y: -0.95}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
       y: 4
-      width: 268
+      width: 12
       height: 20
-    spriteID: b66d71ac49be1ec4fbd7ac7549e6a36c
+    spriteID: 2716a54e24574b946b13f82f63e36a2a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -141,20 +141,19 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-<<<<<<<< HEAD:Assets/Aseprite/obor (mati).aseprite.meta
     uvTransform: {x: 4, y: 4}
   - name: Frame_1
     originalName: 
-    pivot: {x: 0.6, y: -1.1111112}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 22
+      x: 24
       y: 4
-      width: 10
-      height: 18
-    spriteID: 4295d8aee90c5d144ac9108a9b2a7201
+      width: 12
+      height: 20
+    spriteID: 0a134165a6da266428f5e08ff087b72a
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -162,19 +161,19 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 22, y: 4}
+    uvTransform: {x: 24, y: 4}
   - name: Frame_2
     originalName: 
-    pivot: {x: 0.6, y: -1.1111112}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 40
+      x: 44
       y: 4
-      width: 10
-      height: 18
-    spriteID: eb8d0815b9ccbf14eb6bbc4766badc61
+      width: 12
+      height: 20
+    spriteID: 145089a37135e684090d114a1dee13f3
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -182,19 +181,19 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 40, y: 4}
+    uvTransform: {x: 44, y: 4}
   - name: Frame_3
     originalName: 
-    pivot: {x: 0.6, y: -1.1111112}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
       x: 4
-      y: 30
-      width: 10
-      height: 18
-    spriteID: cf908ed4f7d9e8843a1ab87f21f1c486
+      y: 32
+      width: 12
+      height: 20
+    spriteID: e00ca61486b6216469d86fa0b5dc89f8
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -202,19 +201,19 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 4, y: 30}
+    uvTransform: {x: 4, y: 32}
   - name: Frame_4
     originalName: 
-    pivot: {x: 0.6, y: -1.1111112}
+    pivot: {x: 0.5, y: 0.5}
     alignment: 9
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 22
-      y: 30
-      width: 10
-      height: 18
-    spriteID: 200d79f467616a04bbb95fe11f76bb1c
+      x: 24
+      y: 32
+      width: 12
+      height: 20
+    spriteID: dce5786ab095d9145a82f0cf51e5b526
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -222,81 +221,66 @@ ScriptedImporter:
     indices: 
     edges: []
     tessellationDetail: 0
-    uvTransform: {x: 22, y: 30}
-========
-    uvTransform: {x: -21, y: -15}
->>>>>>>> feature/level-design:Assets/Aseprite/obor (mati)-Sheet.aseprite.meta
+    uvTransform: {x: 24, y: 32}
   spriteSheetImportData: []
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 1067637152
+      value0: 3952840350
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: obor (mati)-Sheet
+    name: obor (mati)
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-<<<<<<<< HEAD:Assets/Aseprite/obor (mati).aseprite.meta
     - name: Frame_0
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 26
-        y: 20
-        width: 10
-        height: 18
-      spriteId: 2e86c6ccefc2e264ebbec38281d19d1e
+        x: 25
+        y: 19
+        width: 12
+        height: 20
+      spriteId: 2716a54e24574b946b13f82f63e36a2a
     - name: Frame_1
       frameIndex: 1
       additiveSortOrder: 0
       cellRect:
-        x: 26
-        y: 20
-        width: 10
-        height: 18
-      spriteId: 4295d8aee90c5d144ac9108a9b2a7201
+        x: 25
+        y: 19
+        width: 12
+        height: 20
+      spriteId: 0a134165a6da266428f5e08ff087b72a
     - name: Frame_2
       frameIndex: 2
       additiveSortOrder: 0
       cellRect:
-        x: 26
-        y: 20
-        width: 10
-        height: 18
-      spriteId: eb8d0815b9ccbf14eb6bbc4766badc61
+        x: 25
+        y: 19
+        width: 12
+        height: 20
+      spriteId: 145089a37135e684090d114a1dee13f3
     - name: Frame_3
       frameIndex: 3
       additiveSortOrder: 0
       cellRect:
-        x: 26
-        y: 20
-        width: 10
-        height: 18
-      spriteId: cf908ed4f7d9e8843a1ab87f21f1c486
+        x: 25
+        y: 19
+        width: 12
+        height: 20
+      spriteId: e00ca61486b6216469d86fa0b5dc89f8
     - name: Frame_4
       frameIndex: 4
       additiveSortOrder: 0
       cellRect:
-        x: 26
-        y: 20
-        width: 10
-        height: 18
-      spriteId: 200d79f467616a04bbb95fe11f76bb1c
-========
-    - name: obor (mati)-Sheet
-      frameIndex: 0
-      additiveSortOrder: 0
-      cellRect:
-        x: 0
-        y: 0
-        width: 320
-        height: 64
-      spriteId: b66d71ac49be1ec4fbd7ac7549e6a36c
->>>>>>>> feature/level-design:Assets/Aseprite/obor (mati)-Sheet.aseprite.meta
+        x: 25
+        y: 19
+        width: 12
+        height: 20
+      spriteId: dce5786ab095d9145a82f0cf51e5b526
     linkedCells: []
     parentIndex: -1
   platformSettings:
@@ -312,13 +296,44 @@ ScriptedImporter:
     crunchedCompression: 0
     allowsAlphaSplitting: 0
     androidETC2FallbackOverride: 0
+  - name: DefaultTexturePlatform
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: Standalone
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
+  - name: WebGL
+    overridden: 0
+    ignorePlatformSupport: 0
+    maxTextureSize: 16384
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    androidETC2FallbackOverride: 0
   generatePhysicsShape: 0
   secondarySpriteTextures: []
   spritePackingTag: 
-<<<<<<<< HEAD:Assets/Aseprite/obor (mati).aseprite.meta
   canvasSize: {x: 64, y: 64}
   previousTextureSize: {x: 64, y: 64}
-========
-  canvasSize: {x: 320, y: 64}
-  previousTextureSize: {x: 512, y: 32}
->>>>>>>> feature/level-design:Assets/Aseprite/obor (mati)-Sheet.aseprite.meta
