@@ -12,14 +12,14 @@ public class GameManager : MonoBehaviour
 
     // --- Event untuk Reset Trap ---
     // (Biarkan ini sebagai 'Action' static, ini sudah benar untuk trap)
-    public static event Action OnPlayerRespawn; 
-    
+    public static event Action OnPlayerRespawn;
+
     // === INI PERUBAHANNYA ===
     // 'UIManager' Anda mencari UnityEvent, bukan C# Action.
-    
+
     // 1. Hapus baris lama:
     // public static event Action<int> OnLivesChanged; 
-    
+
     // 2. Tambahkan ini:
     // Kita buat 'class' baru agar UnityEvent bisa kirim 'int'
     [System.Serializable]
@@ -32,18 +32,18 @@ public class GameManager : MonoBehaviour
 
     [Header("Referensi (Drag dari Hierarchy)")]
     [SerializeField] private PlayerController player;
-    [SerializeField] private DeathScreenUI deathScreenUI; 
+    [SerializeField] private DeathScreenUI deathScreenUI;
 
     [Header("Pengaturan Game")]
-    [SerializeField] private int totalLives = 3; 
+    [SerializeField] private int totalLives = 3;
 
     [Header("Pengaturan Respawn")]
-    [SerializeField] private float timeToBlack = 0.5f; 
-    [SerializeField] private float timeBlack = 1.0f;   
-    [SerializeField] private float timeToClear = 0.5f; 
+    [SerializeField] private float timeToBlack = 0.5f;
+    [SerializeField] private float timeBlack = 1.0f;
+    [SerializeField] private float timeToClear = 0.5f;
 
     private int deathCount = 0;
-    private int currentLives; 
+    private int currentLives;
 
     private void Awake()
     {
@@ -55,12 +55,12 @@ public class GameManager : MonoBehaviour
         else
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject); 
+            DontDestroyOnLoad(gameObject);
         }
 
         // Setup nyawa di awal
         currentLives = totalLives;
-        
+
         // Inisialisasi event jika belum (penting)
         if (OnLivesChanged == null)
             OnLivesChanged = new IntEvent();
@@ -76,8 +76,8 @@ public class GameManager : MonoBehaviour
     private IEnumerator SendInitialLivesUpdate()
     {
         // Tunggu 1 frame agar semua UIManager 'Start' dan 'AddListener' dulu
-        yield return null; 
-        
+        yield return null;
+
         // Beri tahu UI di awal game berapa nyawanya
         OnLivesChanged.Invoke(currentLives);
     }
@@ -85,14 +85,14 @@ public class GameManager : MonoBehaviour
     // Fungsi ini dipanggil oleh PlayerController.DieAndRespawn()
     public void StartDeathSequence()
     {
-        if (deathScreenUI.isFading) return; 
-        
+        if (deathScreenUI.isFading) return;
+
         currentLives--;
         deathCount++;
-        
+
         // Panggil event (sekarang pakai 'OnLivesChanged.Invoke')
-        OnLivesChanged.Invoke(currentLives); 
-        
+        OnLivesChanged.Invoke(currentLives);
+
         if (currentLives <= 0)
         {
             Debug.Log("GAME OVER");
@@ -109,14 +109,14 @@ public class GameManager : MonoBehaviour
         deathScreenUI.ShowScreen(deathCount, timeToBlack);
         yield return new WaitForSeconds(timeToBlack);
 
-        player.RespawnAtCheckpoint(); 
-        OnPlayerRespawn?.Invoke();    
-        
+        player.RespawnAtCheckpoint();
+        OnPlayerRespawn?.Invoke();
+
         yield return new WaitForSeconds(timeBlack);
 
         deathScreenUI.HideScreen(timeToClear);
     }
-    
+
     // --- TAMBAHAN BARU ---
     // (Agar UIManager Anda bisa mengambil nyawa awal jika perlu)
     public int GetCurrentLives()
