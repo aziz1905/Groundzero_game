@@ -18546,7 +18546,7 @@ Transform:
   m_GameObject: {fileID: 315163303}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: 1, w: 0}
-  m_LocalPosition: {x: 29.94, y: -52.75, z: 0}
+  m_LocalPosition: {x: 29.94, y: -53.2, z: 0}
   m_LocalScale: {x: 1.1468879, y: 0.90519965, z: 0.90519965}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18598,7 +18598,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.021733046, y: -0.580301}
+  m_Offset: {x: 0.021733046, y: -0.5}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -49549,23 +49549,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.1468879
+      value: 0.7953789
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalScale.y
-      value: 0.90519965
+      value: 0.46566692
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalScale.z
-      value: 0.90519965
+      value: 0.46566692
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 29.94
+      value: 30.26
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -51.8106
+      value: -52.28
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -66652,6 +66652,22 @@ PrefabInstance:
     - target: {fileID: 557199922547794167, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410449406568785254, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
+      propertyPath: m_Size.x
+      value: 1.4577371
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410449406568785254, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
+      propertyPath: m_Size.y
+      value: 1.4075816
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410449406568785254, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.6688685
+      objectReference: {fileID: 0}
+    - target: {fileID: 3410449406568785254, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.56171596
       objectReference: {fileID: 0}
     - target: {fileID: 4315134891673964467, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
       propertyPath: m_Name
@@ -108090,7 +108106,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 211ff66c1014af4449aad9cdd3d91524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerDelay: 0.2
+  triggerDelay: 0.5
   triggeredSprite: {fileID: 21300000, guid: 8607ce26c97da0a46b9445af86f4a0a1, type: 3}
 --- !u!1 &1751931784
 GameObject:
@@ -110811,7 +110827,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -66.12
+      value: -66.23
       objectReference: {fileID: 0}
     - target: {fileID: 8255757603728244824, guid: 43969bf7c5ac7044689cb4e44d92e56e, type: 3}
       propertyPath: m_LocalPosition.z
@@ -127531,7 +127547,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0.046008825, y: 0.09314273}
+  m_Offset: {x: 0.046008825, y: 0.25512823}
   m_SpriteTilingProperty:
     border: {x: 0.5, y: 1.2, z: 0.4, w: 1.1}
     pivot: {x: 0.5130976, y: 0.43887803}
@@ -127542,7 +127558,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 2.2640262, y: 0.7554511}
+  m_Size: {x: 2.2640262, y: 1.079422}
   m_EdgeRadius: 0
 --- !u!4 &2077235273 stripped
 Transform:
