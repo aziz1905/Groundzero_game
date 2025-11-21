@@ -15,27 +15,33 @@ public class EndingCutscene : MonoBehaviour
     [SerializeField] private GameObject promptUI;
     [SerializeField] private Text promptText;
     [SerializeField] private Image fadePanel;
-    [SerializeField] private GameObject thankYouText; // GameObject dengan Text component
+    [SerializeField] private GameObject thankYouText; 
 
     [Header("Audio")]
     [SerializeField] private AudioClip eatSound;
-    [SerializeField] private float eatSoundDelay = 0.2f; // Delay SFX (bisa disesuaikan di Inspector)
+    [SerializeField] private AudioSource backgroundMusic; 
     
     [Header("Camera Settings")]
     [SerializeField] private float targetZoom = 3f;
     [SerializeField] private float zoomDuration = 2f;
-    [SerializeField] private Vector3 cameraOffset = new Vector3(0, 0.5f, -10f);
+    [SerializeField] private Transform cameraTarget; 
+    [SerializeField] private Vector3 cameraOffset = new Vector3(0.25f, 0.25f, -10f); 
     
     [Header("Timing")]
     [SerializeField] private float delayBeforePrompt = 0.5f;
     [SerializeField] private float delayBeforeDestroy = 0.3f;
     [SerializeField] private float fadeOutDuration = 2f;
+    [SerializeField] private float flyDestroyDelay = 0.5f; 
+    [SerializeField] private float delayBeforeEat = 0.3f; 
+    [SerializeField] private float playerFreezeDelay = 0.3f; 
+    [SerializeField] private float thankYouFadeInDelay = 0.5f; 
     
     private bool cutsceneTriggered = false;
     private bool waitingForInput = false;
     private float originalCameraSize;
     private PlayerController playerController;
     private AudioSource playerAudioSource;
+    private Rigidbody2D playerRigidbody; 
 
     void Start()
     {
@@ -55,17 +61,17 @@ public class EndingCutscene : MonoBehaviour
         if (legendaryFly != null && flyAnimator == null)
             flyAnimator = legendaryFly.GetComponent<Animator>();
         
+        if (cameraTarget == null && legendaryFly != null)
+            cameraTarget = legendaryFly.transform;
+        
         originalCameraSize = mainCamera.orthographicSize;
         
-        // Hide UI di awal
         if (promptUI != null)
             promptUI.SetActive(false);
         
-        // Hide Thank You text di awal
         if (thankYouText != null)
             thankYouText.SetActive(false);
         
-        // Setup fade panel
         if (fadePanel != null)
         {
             Color c = fadePanel.color;
@@ -81,6 +87,14 @@ public class EndingCutscene : MonoBehaviour
         {
             waitingForInput = false;
             StartCoroutine(PlayEatingSequence());
+        }
+        
+        // Lock velocity X agar player tidak sliding selama cutscene
+        if (cutsceneTriggered && playerRigidbody != null)
+        {
+            Vector2 vel = playerRigidbody.velocity;
+            vel.x = 0f; // Lock velocity X
+            playerRigidbody.velocity = vel;
         }
     }
 
@@ -101,12 +115,13 @@ public class EndingCutscene : MonoBehaviour
         if (playerController != null)
             playerController.enabled = false;
 
-        // 2. Stop player
-        Rigidbody2D rb = player.GetComponent<Rigidbody2D>();
-        if (rb != null)
+        // 2. Stop player velocity tapi tetap aktif rigidbody agar player menempel ke tanah
+        playerRigidbody = player.GetComponent<Rigidbody2D>();
+        if (playerRigidbody != null)
         {
-            rb.velocity = Vector2.zero;
-            rb.bodyType = RigidbodyType2D.Static;
+            playerRigidbody.velocity = Vector2.zero;
+            // Freeze position X untuk mencegah sliding
+            playerRigidbody.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;
         }
 
         // 3. Idle menghadap lalat
@@ -124,8 +139,18 @@ public class EndingCutscene : MonoBehaviour
             }
         }
 
-        // 4. Zoom kamera
-        Vector3 targetCameraPos = player.position + cameraOffset;
+        // 4. Zoom kamera ke posisi target 
+        Vector3 targetCameraPos;
+        if (cameraTarget != null)
+        {
+            // Gunakan posisi target + offset
+            targetCameraPos = cameraTarget.position + cameraOffset;
+        }
+        else
+        {
+            // Gunakan posisi tetap dari offset
+            targetCameraPos = cameraOffset;
+        }
         yield return StartCoroutine(CameraZoomAndMove(targetCameraPos, targetZoom, zoomDuration));
 
         // 5. Delay kecil lalu munculkan prompt
@@ -145,14 +170,17 @@ public class EndingCutscene : MonoBehaviour
         if (promptUI != null)
             promptUI.SetActive(false);
 
-        // 2. Freeze lalat
+        // 2. Delay sebelum mulai animasi makan
+        yield return new WaitForSeconds(delayBeforeEat);
+
+        // 3. Freeze lalat
         if (flyAnimator != null)
         {
             flyAnimator.enabled = false;
             Debug.Log("Fly animator disabled");
         }
 
-        // 3. Mainkan animasi makan
+        // 4. Mainkan animasi makan DAN SFX BERSAMAAN 
         if (playerAnimator != null)
         {
             playerAnimator.ResetTrigger("Eat");
@@ -160,19 +188,17 @@ public class EndingCutscene : MonoBehaviour
             Debug.Log("Playing Eat animation...");
         }
 
-        // 4. Delay lalu mainkan SFX
-        yield return new WaitForSeconds(eatSoundDelay);
-        
+        // 5. Main SFX LANGSUNG 
         if (playerAudioSource != null && eatSound != null)
         {
             playerAudioSource.PlayOneShot(eatSound);
-            Debug.Log("Playing eat sound");
+            Debug.Log("Playing eat sound (synced with animation)");
         }
 
         yield return null; // beri 1 frame supaya animator masuk ke state Eat
 
-        // 5. Ambil durasi animasi Eat dari clip
-        float eatDuration = 1f; // fallback
+        // 6. Ambil durasi animasi Eat dari clip
+        float eatDuration = 2f; // fallback
         if (playerAnimator != null)
         {
             AnimatorClipInfo[] clips = playerAnimator.GetCurrentAnimatorClipInfo(0);
@@ -183,24 +209,22 @@ public class EndingCutscene : MonoBehaviour
             }
         }
 
-        // 6. Tunggu sampai mendekati akhir animasi (disesuaikan dengan SFX delay)
-        float adjustedWait = (eatDuration * 0.9f) - eatSoundDelay;
-        if (adjustedWait > 0)
-        {
-            yield return new WaitForSeconds(adjustedWait);
-        }
+        // 7. Tunggu sesuai flyDestroyDelay yang diatur di Inspector
+        yield return new WaitForSeconds(flyDestroyDelay);
 
-        // 7. Destroy lalat sedikit sebelum animasi berakhir
+        // 8. Destroy lalat setelah delay yang diatur
         if (legendaryFly != null)
         {
             Destroy(legendaryFly);
-            Debug.Log("Fly destroyed right before Eat animation ended");
+            legendaryFly = null;
+            flyAnimator = null;
+            Debug.Log($"Fly destroyed after {flyDestroyDelay}s delay");
         }
 
-        // 8. Tunggu sisa animasi biar halus
-        yield return new WaitForSeconds(eatDuration * 0.4f);
+        // 9. Tunggu delay sebelum freeze player
+        yield return new WaitForSeconds(playerFreezeDelay);
 
-        // 9. Freeze player di frame terakhir (biar gak balik idle)
+        // 10. Freeze player di frame terakhir (biar gak balik idle)
         if (playerAnimator != null)
         {
             playerAnimator.Update(0);
@@ -208,10 +232,10 @@ public class EndingCutscene : MonoBehaviour
             Debug.Log("Player animator frozen at last frame");
         }
 
-        // 10. Delay kecil sebelum fade
+        // 11. Delay kecil sebelum fade
         yield return new WaitForSeconds(delayBeforeDestroy);
 
-        // 11. Fade to black
+        // 12. Fade to black
         yield return StartCoroutine(FadeToBlack());
 
         Debug.Log("Ending Complete! Fade done.");
@@ -227,7 +251,7 @@ public class EndingCutscene : MonoBehaviour
         {
             elapsed += Time.deltaTime;
             float t = elapsed / duration;
-            t = t * t * (3f - 2f * t); // smoothstep
+            t = t * t * (3f - 2f * t); 
 
             mainCamera.transform.position = Vector3.Lerp(startPos, targetPosition, t);
             mainCamera.orthographicSize = Mathf.Lerp(startSize, targetSize, t);
@@ -250,7 +274,6 @@ public class EndingCutscene : MonoBehaviour
         float elapsed = 0f;
         Color fadeColor = fadePanel.color;
         
-        // Setup Thank You text
         Text thankYouTextComponent = null;
         Color textColor = Color.white;
         
@@ -267,7 +290,7 @@ public class EndingCutscene : MonoBehaviour
             }
         }
 
-        // Fade to black + fade in text
+        // Fade to black dulu
         while (elapsed < fadeOutDuration)
         {
             elapsed += Time.deltaTime;
@@ -277,10 +300,34 @@ public class EndingCutscene : MonoBehaviour
             fadeColor.a = Mathf.Lerp(0f, 1f, t);
             fadePanel.color = fadeColor;
             
-            // Fade in Thank You text (mulai muncul di 30% fade)
+            yield return null;
+        }
+        
+        // Pastikan full black
+        fadeColor.a = 1f;
+        fadePanel.color = fadeColor;
+        
+        // Matikan music setelah fade hitam selesai
+        if (backgroundMusic != null)
+        {
+            backgroundMusic.Stop();
+            Debug.Log("Background music stopped");
+        }
+        
+        // Tunggu delay sebelum fade in text
+        yield return new WaitForSeconds(thankYouFadeInDelay);
+        
+        // Fade in Thank You text
+        float textFadeElapsed = 0f;
+        float textFadeDuration = 1f; 
+        
+        while (textFadeElapsed < textFadeDuration)
+        {
+            textFadeElapsed += Time.deltaTime;
+            float textT = textFadeElapsed / textFadeDuration;
+            
             if (thankYouTextComponent != null)
             {
-                float textT = Mathf.Clamp01((t - 0.3f) / 0.7f);
                 textColor.a = Mathf.Lerp(0f, 1f, textT);
                 thankYouTextComponent.color = textColor;
             }
@@ -288,16 +335,13 @@ public class EndingCutscene : MonoBehaviour
             yield return null;
         }
 
-        // Pastikan full opacity
-        fadeColor.a = 1f;
-        fadePanel.color = fadeColor;
-        
+        // Full opacity
         if (thankYouTextComponent != null)
         {
             textColor.a = 1f;
             thankYouTextComponent.color = textColor;
         }
 
-        Debug.Log("Fade to black complete");
+        Debug.Log("Fade to black complete with Thank You message");
     }
 }
