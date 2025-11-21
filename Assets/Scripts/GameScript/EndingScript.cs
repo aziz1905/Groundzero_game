@@ -19,29 +19,29 @@ public class EndingCutscene : MonoBehaviour
 
     [Header("Audio")]
     [SerializeField] private AudioClip eatSound;
-    [SerializeField] private AudioSource backgroundMusic; // Music yang akan dimatikan setelah Thank You muncul 
+    [SerializeField] private AudioSource backgroundMusic; 
     
     [Header("Camera Settings")]
     [SerializeField] private float targetZoom = 3f;
     [SerializeField] private float zoomDuration = 2f;
-    [SerializeField] private Transform cameraTarget; // Target transform untuk posisi kamera (bisa assign lalat atau empty GameObject)
-    [SerializeField] private Vector3 cameraOffset = new Vector3(0.25f, 0.25f, -10f); // Offset dari target (jika menggunakan target) atau posisi tetap (jika target null)
+    [SerializeField] private Transform cameraTarget; 
+    [SerializeField] private Vector3 cameraOffset = new Vector3(0.25f, 0.25f, -10f); 
     
     [Header("Timing")]
     [SerializeField] private float delayBeforePrompt = 0.5f;
     [SerializeField] private float delayBeforeDestroy = 0.3f;
     [SerializeField] private float fadeOutDuration = 2f;
-    [SerializeField] private float flyDestroyDelay = 0.5f; // Waktu delay sebelum destroy lalat (bisa diatur di Inspector)
-    [SerializeField] private float delayBeforeEat = 0.3f; // Delay setelah menekan E sebelum animasi makan dimulai
-    [SerializeField] private float playerFreezeDelay = 0.3f; // Delay sebelum freeze player setelah destroy lalat (bisa diatur di Inspector)
-    [SerializeField] private float thankYouFadeInDelay = 0.5f; // Delay sebelum fade in "Thank You for Playing" (bisa diatur di Inspector)
+    [SerializeField] private float flyDestroyDelay = 0.5f; 
+    [SerializeField] private float delayBeforeEat = 0.3f; 
+    [SerializeField] private float playerFreezeDelay = 0.3f; 
+    [SerializeField] private float thankYouFadeInDelay = 0.5f; 
     
     private bool cutsceneTriggered = false;
     private bool waitingForInput = false;
     private float originalCameraSize;
     private PlayerController playerController;
     private AudioSource playerAudioSource;
-    private Rigidbody2D playerRigidbody; // Simpan reference rigidbody untuk lock velocity
+    private Rigidbody2D playerRigidbody; 
 
     void Start()
     {
@@ -61,7 +61,6 @@ public class EndingCutscene : MonoBehaviour
         if (legendaryFly != null && flyAnimator == null)
             flyAnimator = legendaryFly.GetComponent<Animator>();
         
-        // Auto-assign lalat sebagai camera target jika tidak di-assign
         if (cameraTarget == null && legendaryFly != null)
             cameraTarget = legendaryFly.transform;
         
@@ -140,7 +139,7 @@ public class EndingCutscene : MonoBehaviour
             }
         }
 
-        // 4. Zoom kamera ke posisi target (konsisten tidak peduli posisi player saat trigger)
+        // 4. Zoom kamera ke posisi target 
         Vector3 targetCameraPos;
         if (cameraTarget != null)
         {
@@ -181,7 +180,7 @@ public class EndingCutscene : MonoBehaviour
             Debug.Log("Fly animator disabled");
         }
 
-        // 4. Mainkan animasi makan DAN SFX BERSAMAAN (tanpa yield diantaranya!)
+        // 4. Mainkan animasi makan DAN SFX BERSAMAAN 
         if (playerAnimator != null)
         {
             playerAnimator.ResetTrigger("Eat");
@@ -189,7 +188,7 @@ public class EndingCutscene : MonoBehaviour
             Debug.Log("Playing Eat animation...");
         }
 
-        // 5. Main SFX LANGSUNG (tidak pakai yield di atas, jadi bersamaan!)
+        // 5. Main SFX LANGSUNG 
         if (playerAudioSource != null && eatSound != null)
         {
             playerAudioSource.PlayOneShot(eatSound);
@@ -320,7 +319,7 @@ public class EndingCutscene : MonoBehaviour
         
         // Fade in Thank You text
         float textFadeElapsed = 0f;
-        float textFadeDuration = 1f; // Durasi fade in text
+        float textFadeDuration = 1f; 
         
         while (textFadeElapsed < textFadeDuration)
         {
