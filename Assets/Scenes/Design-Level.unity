@@ -46866,6 +46866,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1762763695630795309, guid: 83d580608dba5e44392050f97b024157, type: 3}
+      propertyPath: m_UpdateMode
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 3405330731393721606, guid: 83d580608dba5e44392050f97b024157, type: 3}
       propertyPath: m_Name
       value: Player (1)
@@ -46881,14 +46885,14 @@ PrefabInstance:
     - target: {fileID: 3668072102885208201, guid: 83d580608dba5e44392050f97b024157, type: 3}
       propertyPath: wallHitSound
       value: 
-      objectReference: {fileID: 8300000, guid: 34724901e64744f41bed6114378b5dd1, type: 3}
+      objectReference: {fileID: 8300000, guid: b3fea9a85123b8e478755ef112a12e73, type: 3}
     - target: {fileID: 5247082305949544832, guid: 83d580608dba5e44392050f97b024157, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 24.69
+      value: 24.45
       objectReference: {fileID: 0}
     - target: {fileID: 5247082305949544832, guid: 83d580608dba5e44392050f97b024157, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -2.13
+      value: 7.29
       objectReference: {fileID: 0}
     - target: {fileID: 5247082305949544832, guid: 83d580608dba5e44392050f97b024157, type: 3}
       propertyPath: m_LocalPosition.z
@@ -46921,6 +46925,10 @@ PrefabInstance:
     - target: {fileID: 5247082305949544832, guid: 83d580608dba5e44392050f97b024157, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8971267818266796679, guid: 83d580608dba5e44392050f97b024157, type: 3}
+      propertyPath: m_Volume
+      value: 0.1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -67108,6 +67116,14 @@ PrefabInstance:
     - target: {fileID: 4315134891673964467, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
       propertyPath: m_Name
       value: PlatformSpike
+      objectReference: {fileID: 0}
+    - target: {fileID: 6633130899643198488, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
+      propertyPath: m_Size.y
+      value: 0.43029243
+      objectReference: {fileID: 0}
+    - target: {fileID: 6633130899643198488, guid: c0bb8c39ef8912b4da7737473ba62d43, type: 3}
+      propertyPath: m_Offset.y
+      value: -0.011416294
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -106386,7 +106402,7 @@ GameObject:
   - component: {fileID: 1710535297}
   m_Layer: 0
   m_Name: Bgm-Ingame
-  m_TagString: Untagged
+  m_TagString: BGM
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
