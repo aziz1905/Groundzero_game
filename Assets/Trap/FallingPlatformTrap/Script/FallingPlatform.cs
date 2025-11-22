@@ -1,24 +1,25 @@
 using System.Collections;
 using UnityEngine;
 
-// Pastikan nama file ini 'FallingLeaf.cs' atau sesuai
-public class FallingLeaf : MonoBehaviour
+public class FallingPlatform : MonoBehaviour
 {
     [Header("Timing")]
-    [SerializeField] private float triggerDelay = 1f; // Ganti nama dari fallDelay
+    [SerializeField] private float triggerDelay = 1f;
+    [SerializeField] private float resetDelay = 2f; // Waktu tunggu sebelum reset otomatis 
 
     [Header("Visuals")]
-    [SerializeField] private Sprite triggeredSprite; // <-- Masukkan sprite ke-2 (layu) di sini
-    private Sprite originalSprite; // Untuk menyimpan sprite asli
+    [SerializeField] private Sprite triggeredSprite; 
+    [SerializeField] [Range(0f, 1f)] private float triggeredOpacity = 0.7f; 
+    private Sprite originalSprite; 
+    private Color originalColor; 
 
     // --- Komponen ---
     private SpriteRenderer spriteRenderer;
     private Collider2D c2d;
-    // Kita tidak perlu Rigidbody2D lagi
 
     // --- Kontrol State ---
     private bool hasBeenTriggered = false;
-    private Coroutine activeCoroutine; // Untuk melacak coroutine
+    private Coroutine activeCoroutine; 
 
     // === MENDENGARKAN SINYAL RESET DARI GAMEMANAGER ===
     private void OnEnable()
@@ -30,21 +31,18 @@ public class FallingLeaf : MonoBehaviour
     {
         GameManager.OnPlayerRespawn -= ResetTrap;
     }
-    // ===============================================
 
     private void Start()
     {
-        // Ambil komponen
         spriteRenderer = GetComponent<SpriteRenderer>();
         c2d = GetComponent<Collider2D>();
         
-        // Simpan sprite asli saat game dimulai
         if (spriteRenderer != null)
         {
             originalSprite = spriteRenderer.sprite;
+            originalColor = spriteRenderer.color;
         }
 
-        // Panggil ResetTrap() di awal untuk state yang benar
         ResetTrap();
     }
 
@@ -61,49 +59,53 @@ public class FallingLeaf : MonoBehaviour
         }
     }
 
-    // --- COROUTINE INI SUDAH DIUBAH ---
     private IEnumerator BecomeTrigger()
     {
         hasBeenTriggered = true;
 
-        // (Opsional) Tambahkan efek goyang (shake) di sini
+        // 1. TUNGGU JEDA DULU
+        yield return new WaitForSeconds(triggerDelay);
 
-        // 1. UBAH SPRITE
+        // 2. UBAH SPRITE DAN KURANGI OPACITY
         if (spriteRenderer != null && triggeredSprite != null)
         {
             spriteRenderer.sprite = triggeredSprite;
+            Color newColor = spriteRenderer.color;
+            newColor.a = triggeredOpacity;
+            spriteRenderer.color = newColor;
         }
 
-        // 2. TUNGGU JEDA
-        yield return new WaitForSeconds(triggerDelay);
-
-        // 3. JADI TRIGGER (BUKAN JATUH)
+        // 3. JADI TRIGGER 
         if (c2d != null)
         {
             c2d.isTrigger = true;
         }
 
-        // 4. JANGAN HANCUR
-        // (Baris Destroy(gameObject) dihapus)
+        // 4. TUNGGU SEBELUM RESET OTOMATIS
+        yield return new WaitForSeconds(resetDelay);
+
+        // 5. RESET KEMBALI KE KONDISI AWAL
+        ResetTrap();
     }
 
     // === FUNGSI RESET UNTUK GAMEMANAGER ===
     private void ResetTrap()
     {
-        // Hentikan coroutine jika sedang berjalan (misal player mati saat daun goyang)
+        // Hentikan coroutine jika sedang berjalan (misal player mati saat daun goyang atau reset otomatis)
         if (activeCoroutine != null)
         {
             StopCoroutine(activeCoroutine);
-            activeCoroutine = null;
         }
+        activeCoroutine = null;
 
         // Kembalikan semua ke kondisi awal
         hasBeenTriggered = false;
         
-        // Kembalikan sprite asli
+        // Kembalikan sprite asli dan warna/opacity asli
         if (spriteRenderer != null && originalSprite != null)
         {
             spriteRenderer.sprite = originalSprite;
+            spriteRenderer.color = originalColor;
         }
 
         // Kembalikan collider jadi solid

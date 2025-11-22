@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Sfx/Kodok nabrak.wav.meta
+guid: 55df62abf7fabc2478454f1282ad3f5f
+=======
+guid: f60e20060e6bf144e82ca825ac2b164d
+>>>>>>> dimas:Assets/Audio/SFX/Kodok nabrak.wav.meta
+AudioImporter:
+  externalObjects: {}
+  serializedVersion: 7
+  defaultSettings:
+    serializedVersion: 2
+    loadType: 0
+    sampleRateSetting: 0
+    sampleRateOverride: 44100
+    compressionFormat: 1
+    quality: 1
+    conversionMode: 0
+    preloadAudioData: 0
+  platformSettingOverrides: {}
+  forceToMono: 0
+  normalize: 1
+  loadInBackground: 0
+  ambisonic: 0
+  3D: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

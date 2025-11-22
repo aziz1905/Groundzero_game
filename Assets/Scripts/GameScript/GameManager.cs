@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using System;
-using UnityEngine.Events; // <-- PENTING: Tambahkan ini
+using UnityEngine.Events;
 
 public class GameManager : MonoBehaviour
 {
@@ -11,22 +11,13 @@ public class GameManager : MonoBehaviour
     // ------------------------
 
     // --- Event untuk Reset Trap ---
-    // (Biarkan ini sebagai 'Action' static, ini sudah benar untuk trap)
     public static event Action OnPlayerRespawn;
 
-    // === INI PERUBAHANNYA ===
-    // 'UIManager' Anda mencari UnityEvent, bukan C# Action.
-
-    // 1. Hapus baris lama:
-    // public static event Action<int> OnLivesChanged; 
-
-    // 2. Tambahkan ini:
-    // Kita buat 'class' baru agar UnityEvent bisa kirim 'int'
+    // === UnityEvent untuk Lives ===
     [System.Serializable]
     public class IntEvent : UnityEvent<int> { }
 
     [Header("UI Events")]
-    // 3. Ini adalah event yang dicari UIManager (non-static, tapi ada di Instance)
     public IntEvent OnLivesChanged;
     // ------------------------------------
 
@@ -68,8 +59,6 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        // Kita pindahkan panggilannya ke sini, 
-        // agar UI Manager yang 'Start'-nya belakangan tetap dapat
         StartCoroutine(SendInitialLivesUpdate());
     }
 
@@ -82,7 +71,9 @@ public class GameManager : MonoBehaviour
         OnLivesChanged.Invoke(currentLives);
     }
 
-    // Fungsi ini dipanggil oleh PlayerController.DieAndRespawn()
+    // === UPDATED FUNCTION ===
+    // Fungsi ini dipanggil oleh PlayerController.DeathAnimationSequence()
+    // SETELAH animasi mati selesai (player sudah jatuh keluar screen)
     public void StartDeathSequence()
     {
         if (deathScreenUI.isFading) return;
@@ -90,13 +81,14 @@ public class GameManager : MonoBehaviour
         currentLives--;
         deathCount++;
 
-        // Panggil event (sekarang pakai 'OnLivesChanged.Invoke')
+        // Panggil event untuk update UI lives
         OnLivesChanged.Invoke(currentLives);
 
         if (currentLives <= 0)
         {
             Debug.Log("GAME OVER");
-            StartCoroutine(DeathSequenceCoroutine()); // Respawn saja untuk tes
+            // TODO: Tambahkan Game Over screen nanti
+            StartCoroutine(DeathSequenceCoroutine()); // Respawn dulu untuk testing
         }
         else
         {
@@ -106,21 +98,33 @@ public class GameManager : MonoBehaviour
 
     private IEnumerator DeathSequenceCoroutine()
     {
+        // 1. Show death screen (fade to black)
         deathScreenUI.ShowScreen(deathCount, timeToBlack);
         yield return new WaitForSeconds(timeToBlack);
 
+        // 2. Respawn player (di tengah layar hitam)
         player.RespawnAtCheckpoint();
-        OnPlayerRespawn?.Invoke();
+        OnPlayerRespawn?.Invoke(); // Reset traps
+        
+        Debug.Log("Player respawned, waiting before clearing screen...");
 
+        // 3. Wait saat layar hitam (biar smooth)
         yield return new WaitForSeconds(timeBlack);
 
+        // 4. Fade out death screen (clear to game)
         deathScreenUI.HideScreen(timeToClear);
+        
+        Debug.Log("Death sequence complete!");
     }
 
-    // --- TAMBAHAN BARU ---
-    // (Agar UIManager Anda bisa mengambil nyawa awal jika perlu)
+    // --- TAMBAHAN ---
     public int GetCurrentLives()
     {
         return currentLives;
+    }
+    
+    public int GetDeathCount()
+    {
+        return deathCount;
     }
 }
