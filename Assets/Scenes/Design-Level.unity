@@ -48547,7 +48547,7 @@ GameObject:
   - component: {fileID: 761334596}
   - component: {fileID: 761334595}
   m_Layer: 3
-  m_Name: EnvMap_39 (26)
+  m_Name: TRAP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -89009,7 +89009,7 @@ GameObject:
   - component: {fileID: 1440422026}
   - component: {fileID: 1440422025}
   m_Layer: 3
-  m_Name: EnvMap_39 (25)
+  m_Name: TRAP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -111756,7 +111756,7 @@ GameObject:
   - component: {fileID: 1785589973}
   - component: {fileID: 1785589972}
   m_Layer: 3
-  m_Name: EnvMap_39 (27)
+  m_Name: TRAP
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
