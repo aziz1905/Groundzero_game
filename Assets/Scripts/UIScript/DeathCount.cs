@@ -7,7 +7,7 @@ using TMPro;
 public class DeathScreenUI : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI deathText;
-    
+
     private CanvasGroup canvasGroup;
     public bool isFading { get; private set; } // Agar GameManager tahu
 
@@ -37,7 +37,7 @@ public class DeathScreenUI : MonoBehaviour
     {
         canvasGroup.blocksRaycasts = (targetAlpha == 1);
         canvasGroup.interactable = (targetAlpha == 1);
-        
+
         float startAlpha = canvasGroup.alpha;
         float timer = 0f;
 
@@ -49,7 +49,7 @@ public class DeathScreenUI : MonoBehaviour
         }
 
         canvasGroup.alpha = targetAlpha;
-        
+
         // Jika fade out, matikan canvas di akhir
         if (targetAlpha == 0)
         {
