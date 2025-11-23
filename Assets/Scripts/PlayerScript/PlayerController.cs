@@ -45,6 +45,7 @@ public class PlayerController : MonoBehaviour
     public AudioClip jumpSound;
     public AudioClip landSound;
     public AudioClip wallHitSound;
+    public AudioClip dieSound;
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -62,6 +63,10 @@ public class PlayerController : MonoBehaviour
     // === Audio === // <-- BARIS BARU
     private AudioSource myAudioSource;
 
+    // ===PlayerDeathHandler===
+
+    private PlayerDeathHandler DeathHandler;
+
     private void Start()
     {
         respawnPosition = transform.position;
@@ -75,6 +80,14 @@ public class PlayerController : MonoBehaviour
 
         // Ambil komponen AudioSource saat mulai
         myAudioSource = GetComponent<AudioSource>(); // <-- BARIS BARU
+
+        //Death Controller (NEW!)
+        DeathHandler = gameObject.GetComponent<PlayerDeathHandler>();
+
+        if (DeathHandler == null)
+        {
+        DeathHandler = gameObject.AddComponent<PlayerDeathHandler>();
+        }
     }
 
     private void Update()
@@ -295,9 +308,11 @@ public class PlayerController : MonoBehaviour
     public void DieAndRespawn()
     {
         // Hanya panggil GameManager, jangan lakukan apa-apa lagi
-        GameManager.Instance.StartDeathSequence();
+        
 
         // (GameManager.Instance.PlayerHasDied() dari skrip lama Anda dihapus)
+        myAudioSource.PlayOneShot(dieSound); // <-- BARIS BARU
+
 
         // Hentikan charge jika sedang charge (ini boleh tetap ada)
         if (isChargingJump)
@@ -309,6 +324,19 @@ public class PlayerController : MonoBehaviour
             if (animator != null)
                 animator.SetBool("isCharging", false);
         }
+
+
+        if (animator != null)
+            {
+                animator.SetTrigger("Die");
+            }
+
+        //Panggil Animasi Mati
+        if (DeathHandler != null)
+        {
+            DeathHandler.TriggerDeathAnimation();
+        }
+
     }
 
     // (Tambahkan fungsi baru ini di mana saja di dalam class PlayerController)
@@ -319,6 +347,25 @@ public class PlayerController : MonoBehaviour
         // Ini adalah kode LAMA dari DieAndRespawn()
         transform.position = respawnPosition;
         rb.velocity = Vector2.zero;
+
+        //NEW SCRIPT !
+        if(DeathHandler != null)
+        {
+            DeathHandler.ResetPhysics();
+        }
+
+        if (animator != null)
+        {
+            // Cara paling ampuh: Play langsung nama state Idle-nya
+            // Cek di Animator Window, apa nama kotak oranye (default)-nya. 
+            // Biasanya "Idle" atau "Player_Idle".
+            animator.Play("Idle"); 
+            
+            // Reset parameter lain biar bersih
+            animator.SetBool("isJumping", false);
+            animator.SetBool("isCharging", false);
+            animator.SetFloat("Speed", 0);
+        }
     }
 
     public void SetNewRespawnPoint(Vector3 newPosition)
