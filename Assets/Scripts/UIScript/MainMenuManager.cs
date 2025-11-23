@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
+using TMPro;
 using UnityEngine.SceneManagement; // <-- WAJIB untuk pindah scene
 
 
@@ -11,11 +12,16 @@ public class MainMenuManager : MonoBehaviour
 {
     [Header("Panel Settings")]
     [Header("Audio Settings")]
+    [Header("General UI")]
     public AudioMixer mainMixer;
     public GameObject creditsPanel;
     public GameObject optionsPanel;
     public GameObject dimBackground;
     public Slider musicSlider;
+
+    public GameObject infoPanel;          // Referensi ke Panel Hitam (Wadah)
+    public TextMeshProUGUI titleText;
+
     // 1. Fungsi untuk Tombol START
     //    Pastikan "NamaSceneGameAnda" sesuai nama file scene game Anda.
     public void StartGame()
@@ -35,30 +41,21 @@ public class MainMenuManager : MonoBehaviour
         //    mengatur Audio Mixer-nya ke nilai itu juga
         SetMusicVolume(initialVolume);
     }
+    // FUNGSI Buka Panel & Set Judul
+    // Fungsi ini menerima 'teks' yang dikirim dari tombol
+    public void OpenInfoPanel(string judul)
+    {
+        infoPanel.SetActive(true);      // 1. Nyalakan Panel
+        titleText.text = judul;         // 2. Ubah Teks Judul sesuai parameter
+    }
+
+    // FUNGSI 2: Tutup Panel
+    public void CloseInfoPanel()
+    {
+        infoPanel.SetActive(false);     // Matikan Panel
+    }
     // 3. Fungsi untuk Tombol CREDITS
-    public void OpenCredits()
-    {
-        creditsPanel.SetActive(true);
-        dimBackground.SetActive(true);
-    }
 
-    public void CloseCredits()
-    {
-        creditsPanel.SetActive(false);
-        dimBackground.SetActive(false);
-    }
-    // 4. Fungsi untuk Tombol OPTIONS
-    public void OpenOptions()
-    {
-        optionsPanel.SetActive(true);
-        dimBackground.SetActive(true); // Kita pakai dimmer yang sama
-    }
-
-    public void CloseOptions()
-    {
-        optionsPanel.SetActive(false);
-        dimBackground.SetActive(false);
-    }
     public void ToggleFullscreen()
     {
         // Baris ini adalah kuncinya.
