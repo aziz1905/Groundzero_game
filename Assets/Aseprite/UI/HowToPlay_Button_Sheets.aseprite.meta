@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: a877e415604c0ad4a81a986cf9319b23
+guid: d8728349ce071d9449b1f258819b4e37
 ScriptedImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Credits_Button
+  - name: HowToPlay_Button_Sheets
     originalName: 
     pivot: {x: 0.47826087, y: -0.061728396}
     alignment: 9
@@ -133,7 +133,7 @@ ScriptedImporter:
       y: 4
       width: 115
       height: 81
-    spriteID: 6e27774bdfcaf8746bc87000d1395a42
+    spriteID: 251a5cfe74d9d724d8780a5f0f005492
     spriteBone: []
     spriteOutline: []
     vertices: []
@@ -146,17 +146,17 @@ ScriptedImporter:
   asepriteLayers:
   - layerIndex: 0
     uuid:
-      value0: 3714297171
+      value0: 2024047753
       value1: 0
       value2: 0
       value3: 0
     guid: 0
-    name: Credits_Button
+    name: HowToPlay_Button_Sheets
     layerFlags: 0
     layerType: 0
     blendMode: 0
     cells:
-    - name: Credits_Button
+    - name: HowToPlay_Button_Sheets
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
@@ -164,7 +164,7 @@ ScriptedImporter:
         y: 5
         width: 115
         height: 81
-      spriteId: 6e27774bdfcaf8746bc87000d1395a42
+      spriteId: 251a5cfe74d9d724d8780a5f0f005492
     linkedCells: []
     parentIndex: -1
   platformSettings:
