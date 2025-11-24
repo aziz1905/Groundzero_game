@@ -11,14 +11,16 @@ public class PlayerDeathHandler : MonoBehaviour
 
     private PlayerController playerController;
     private Rigidbody2D rb;
-    private Collider2D col;
+    private BoxCollider2D boxcol;
+    private CircleCollider2D circol;
     private float defaultGravity;
 
     private void Awake()
     {
         playerController = GetComponent<PlayerController>();
         rb = GetComponent<Rigidbody2D>();
-        col = GetComponent<Collider2D>(); // Ambil Collider (Box/Capsule/Circle)
+        boxcol = GetComponent<BoxCollider2D>();
+        circol = GetComponent<CircleCollider2D>(); // Ambil Collider (Box/Capsule/Circle)
         defaultGravity = rb.gravityScale;
     }
 
@@ -29,7 +31,8 @@ public class PlayerDeathHandler : MonoBehaviour
         playerController.enabled = false;
 
         // 2. Matikan collider agar tembus tanah/trap
-        if(col != null) col.enabled = false;
+        if(boxcol != null) boxcol.enabled = false;
+        if(circol != null) circol.enabled = false;
 
         // 3. Reset velocity biar tidak terlempar ke samping
         rb.velocity = Vector2.zero;
@@ -54,7 +57,8 @@ public class PlayerDeathHandler : MonoBehaviour
 
         rb.gravityScale = defaultGravity;
         rb.velocity = Vector2.zero;
-        if(col != null) col.enabled = true;
+        if(boxcol != null) boxcol.enabled = true;
+        if(circol != null) circol.enabled = true;
         
         // Nyalakan kembali script controller
         playerController.enabled = true;
