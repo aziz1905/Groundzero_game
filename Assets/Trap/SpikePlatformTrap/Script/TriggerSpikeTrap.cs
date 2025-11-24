@@ -42,10 +42,17 @@ public class TriggerSpikeTrap : MonoBehaviour
         if (other.CompareTag("Player") && !hasBeenTriggered)
         {
             hasBeenTriggered = true;
-            trapCollider.enabled = false; // Matikan collider
+            trapCollider.enabled = false;
 
-            // Mulai Coroutine DAN SIMPAN
+            // Mulai animasi trap
             activeCoroutine = StartCoroutine(ShowSpikesAfterDelay());
+
+            // === PANGGIL FUNGSI MATI PLAYER ===
+            PlayerController pc = other.GetComponent<PlayerController>();
+            if (pc != null)
+            {
+                pc.DieAndRespawn();
+            }
         }
     }
 
