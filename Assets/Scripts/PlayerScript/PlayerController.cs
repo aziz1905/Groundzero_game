@@ -2,8 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Menambahkan AudioSource ke RequireComponent agar otomatis ada
-[RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))] // <-- BARIS BARU
+[RequireComponent(typeof(Rigidbody2D), typeof(AudioSource))]
 public class PlayerController : MonoBehaviour
 {
     // === Jump Settings ===
@@ -40,12 +39,15 @@ public class PlayerController : MonoBehaviour
     public ChargeIndikator chargeIndicator;
     [SerializeField] private GameObject jumpBar; 
 
-    // === Audio === // <-- BLOK BARU
+    // === Audio ===
     [Header("Audio")]
     public AudioClip jumpSound;
     public AudioClip landSound;
     public AudioClip wallHitSound;
     public AudioClip dieSound;
+
+    [Header("Effects")]
+    public ParticleSystem jumpDust;
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -57,14 +59,8 @@ public class PlayerController : MonoBehaviour
     private bool isOnIce = false;
     private int facingDirection = 1;
 
-    // === Animator ===
     private Animator animator;
-
-    // === Audio === // <-- BARIS BARU
     private AudioSource myAudioSource;
-
-    // ===PlayerDeathHandler===
-
     private PlayerDeathHandler DeathHandler;
 
     private void Start()
@@ -77,40 +73,33 @@ public class PlayerController : MonoBehaviour
             chargeIndicator.StopCharge();
 
         animator = GetComponent<Animator>();
+        myAudioSource = GetComponent<AudioSource>();
 
-        // Ambil komponen AudioSource saat mulai
-        myAudioSource = GetComponent<AudioSource>(); // <-- BARIS BARU
-
-        //Death Controller (NEW!)
         DeathHandler = gameObject.GetComponent<PlayerDeathHandler>();
-
         if (DeathHandler == null)
         {
-        DeathHandler = gameObject.AddComponent<PlayerDeathHandler>();
+            DeathHandler = gameObject.AddComponent<PlayerDeathHandler>();
         }
     }
 
     private void Update()
     {
-        // --- Ground check ---
-        bool wasGrounded = isGrounded; // <-- BARIS BARU (Simpan state frame lalu)
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, walkableLayers);
+        bool wasGrounded = isGrounded;
+        
+        // ✅ CEK GROUND: Hanya dari bawah player
+        isGrounded = CheckIfGrounded();
 
-        // --- Cek jika BARU mendarat --- // <-- BLOK BARU
         if (isGrounded && !wasGrounded)
         {
-            // Hanya bersuara jika mendarat (bukan baru spawn)
             if (rb.velocity.y < -0.1f) 
             {
                 myAudioSource.PlayOneShot(landSound);
             }
         }
 
-        // --- Reset wall bounce saat di tanah ---
         if (isGrounded && isWallBouncing)
             isWallBouncing = false;
 
-        // --- Batalkan charge jika jatuh ---
         if (isChargingJump && !isGrounded)
         {
             isChargingJump = false;
@@ -121,24 +110,19 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isCharging", false);
         }
 
-        // --- Mulai charge dengan spasi ---
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             isChargingJump = true;
             rb.velocity = new Vector2(0, rb.velocity.y);
-
-            // Default arah = arah hadap terakhir
             jumpDirection = facingDirection;
 
             if (chargeIndicator != null)
                 chargeIndicator.StartCharge();
 
-            // 🔹 Aktifkan animasi charge
             if (animator != null)
                 animator.SetBool("isCharging", true);
         }
 
-        // --- Selama charging, boleh ubah arah ---
         if (isChargingJump)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -146,14 +130,13 @@ public class PlayerController : MonoBehaviour
                 jumpDirection = Mathf.Sign(horizontalInput);
         }
 
-        // --- Lepas spasi untuk lompat ---
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
         {
             if (animator != null)
             {
-                animator.SetBool("isCharging", false); // 🔹 matikan charge
+                animator.SetBool("isCharging", false);
                 animator.SetInteger("Direction", (int)jumpDirection);
-                animator.SetBool("isJumping", true);   // 🔹 lompat
+                animator.SetBool("isJumping", true);
             }
 
             PerformJump();
@@ -163,7 +146,6 @@ public class PlayerController : MonoBehaviour
                 chargeIndicator.StopCharge();
         }
 
-        // --- Update arah hadap player ---
         if (!isChargingJump && isGrounded && !isWallBouncing)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -171,66 +153,71 @@ public class PlayerController : MonoBehaviour
                 facingDirection = (int)Mathf.Sign(horizontalInput);
         }
 
-        // --- Handle wall bounce ---
         HandleWallBounce();
-
-        // === Update Animator ===
         UpdateAnimator();
     }
 
     private void FixedUpdate()
     {
-        // Hanya bisa gerak di darat, tidak sedang charge, tidak wall bounce
         if (isGrounded && !isChargingJump && !isWallBouncing)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
 
             if (isOnIce)
             {
-                // ===== Efek licin (momentum inertia) =====
                 float targetSpeed = horizontalInput * moveSpeed;
-                float smoothness = 0.05f; // Semakin kecil => semakin licin
+                float smoothness = 0.05f;
                 float newVelocityX = Mathf.Lerp(rb.velocity.x, targetSpeed, smoothness);
-
                 rb.velocity = new Vector2(newVelocityX, rb.velocity.y);
 
-                // Sedikit terus meluncur walau input dilepas
                 if (Mathf.Abs(horizontalInput) < 0.1f)
                     rb.velocity = new Vector2(rb.velocity.x * 0.99f, rb.velocity.y);
             }
             else
             {
-                // ===== Gerak normal =====
                 rb.velocity = new Vector2(horizontalInput * moveSpeed, rb.velocity.y);
             }
         }
+    }
+
+    // ✅ FUNGSI BARU: Cek ground dengan raycast dari bawah
+    private bool CheckIfGrounded()
+    {
+        // Raycast dari tengah player ke bawah (lebih akurat)
+        RaycastHit2D hit = Physics2D.Raycast(
+            groundCheck.position, 
+            Vector2.down, 
+            groundRadius, 
+            walkableLayers
+        );
+
+        // Debug line untuk lihat raycast (hapus nanti kalau sudah oke)
+        Debug.DrawRay(groundCheck.position, Vector2.down * groundRadius, hit ? Color.green : Color.red);
+
+        return hit.collider != null;
     }
 
     private void PerformJump()
     {
         float chargeValue = 1f;
 
-        // Ambil nilai charge dari indikator (kalau ada)
         if (chargeIndicator != null)
             chargeValue = chargeIndicator.GetCurrentChargeValue();
 
-        // Konversi charge 0–1 jadi kekuatan antara min dan max
         float force = Mathf.Lerp(minJumpForce, maxJumpForce, chargeValue);
-
         float angleInRadians = jumpAngle * Mathf.Deg2Rad;
         float xDir = jumpDirection * Mathf.Cos(angleInRadians);
         float yDir = Mathf.Sin(angleInRadians);
         Vector2 jumpVector = new Vector2(xDir, yDir).normalized;
 
+        if (jumpDust != null) jumpDust.Play();
+
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
-
-        // 🎵 Mainkan suara loncat
-        myAudioSource.PlayOneShot(jumpSound); // <-- BARIS BARU
+        myAudioSource.PlayOneShot(jumpSound);
     }
 
-
-    // === Wall Bounce ===
+    // ✅ Wall bounce tetap pakai leftWallCheck & rightWallCheck (dari samping)
     private bool IsOnLeftWall() => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer);
     private bool IsOnRightWall() => Physics2D.OverlapCircle(rightWallCheck.position, wallCheckDistance, wallLayer);
 
@@ -256,12 +243,9 @@ public class PlayerController : MonoBehaviour
         isWallBouncing = true;
         wallBounceTimer = wallBounceDuration;
         rb.velocity = new Vector2(-rb.velocity.x * wallBounceStrength, rb.velocity.y * wallBounceDamping);
-
-        // 🎵 Mainkan suara bentur tembok
-        myAudioSource.PlayOneShot(wallHitSound); // <-- BARIS BARU
+        myAudioSource.PlayOneShot(wallHitSound);
     }
 
-    // === Deteksi Platform Es (pakai Tag) ===
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.tag == "IcePlatform")
@@ -274,7 +258,6 @@ public class PlayerController : MonoBehaviour
             isOnIce = false;
     }
 
-    // === Gizmos untuk debugging ===
     private void OnDrawGizmosSelected()
     {
         if (groundCheck != null)
@@ -307,14 +290,8 @@ public class PlayerController : MonoBehaviour
 
     public void DieAndRespawn()
     {
-        // Hanya panggil GameManager, jangan lakukan apa-apa lagi
-        
+        myAudioSource.PlayOneShot(dieSound);
 
-        // (GameManager.Instance.PlayerHasDied() dari skrip lama Anda dihapus)
-        myAudioSource.PlayOneShot(dieSound); // <-- BARIS BARU
-
-
-        // Hentikan charge jika sedang charge (ini boleh tetap ada)
         if (isChargingJump)
         {
             isChargingJump = false;
@@ -325,30 +302,22 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("isCharging", false);
         }
 
-
         if (animator != null)
-            {
-                animator.SetTrigger("Die");
-            }
+        {
+            animator.SetTrigger("Die");
+        }
 
-        //Panggil Animasi Mati
         if (DeathHandler != null)
         {
             DeathHandler.TriggerDeathAnimation();
         }
-
     }
 
-    // (Tambahkan fungsi baru ini di mana saja di dalam class PlayerController)
-
-    // Fungsi ini dipanggil oleh GameManager saat layar sudah hitam
     public void RespawnAtCheckpoint()
     {
-        // Ini adalah kode LAMA dari DieAndRespawn()
         transform.position = respawnPosition;
         rb.velocity = Vector2.zero;
 
-        //NEW SCRIPT !
         if(DeathHandler != null)
         {
             DeathHandler.ResetPhysics();
@@ -356,12 +325,7 @@ public class PlayerController : MonoBehaviour
 
         if (animator != null)
         {
-            // Cara paling ampuh: Play langsung nama state Idle-nya
-            // Cek di Animator Window, apa nama kotak oranye (default)-nya. 
-            // Biasanya "Idle" atau "Player_Idle".
             animator.Play("Idle"); 
-            
-            // Reset parameter lain biar bersih
             animator.SetBool("isJumping", false);
             animator.SetBool("isCharging", false);
             animator.SetFloat("Speed", 0);
@@ -385,7 +349,6 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetInteger("Direction", facingDirection);
 
-            // Reset jumping flag saat mendarat
             if (Mathf.Abs(rb.velocity.y) < 0.1f)
             {
                 animator.SetBool("isJumping", false);
