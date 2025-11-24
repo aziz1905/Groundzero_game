@@ -39,15 +39,6 @@ public class PlayerController : MonoBehaviour
     public ChargeIndikator chargeIndicator;
     [SerializeField] private GameObject jumpBar; 
 
-    // ==Trajectory==
-    [Header("Trajectory Visuals")]
-    public LineRenderer trajectoryLine; // Drag komponen LineRenderer ke sini
-    [Tooltip("Berapa banyak titik dalam garis (semakin tinggi semakin mulus)")]
-    public int trajectoryResolution = 30; 
-    [Tooltip("Seberapa jauh ke masa depan kita prediksi (detik)")]
-    public float trajectoryTime = 1.0f; 
-    public LayerMask trajectoryCollisionMask;
-
     // === Audio ===
     [Header("Audio")]
     public AudioClip jumpSound;
@@ -137,11 +128,6 @@ public class PlayerController : MonoBehaviour
             float horizontalInput = Input.GetAxisRaw("Horizontal");
             if (horizontalInput != 0)
                 jumpDirection = Mathf.Sign(horizontalInput);
-
-            ShowTrajectory();
-        } else
-        {
-            if(trajectoryLine != null) trajectoryLine.positionCount = 0;
         }
 
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
@@ -229,71 +215,6 @@ public class PlayerController : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.AddForce(jumpVector * force, ForceMode2D.Impulse);
         myAudioSource.PlayOneShot(jumpSound);
-    }
-
-    private void ShowTrajectory()
-    {
-        if (trajectoryLine == null) return;
-
-        // 1. Hitung Force yang SAMA PERSIS dengan PerformJump
-        float chargeValue = 1f;
-        if (chargeIndicator != null) chargeValue = chargeIndicator.GetCurrentChargeValue();
-        
-        float force = Mathf.Lerp(minJumpForce, maxJumpForce, chargeValue);
-
-        // 2. Hitung Vektor Kecepatan Awal (Velocity)
-        // Rumus Fisika: Velocity = Impulse / Mass
-        // Kita butuh Velocity awal untuk rumus lintasan
-        float angleInRadians = jumpAngle * Mathf.Deg2Rad;
-        float xDir = jumpDirection * Mathf.Cos(angleInRadians);
-        float yDir = Mathf.Sin(angleInRadians);
-        
-        Vector2 calculatedForceVector = new Vector2(xDir, yDir).normalized * force;
-        Vector2 startVelocity = calculatedForceVector / rb.mass;
-
-        // 3. Siapkan Array Titik
-        Vector3[] points = new Vector3[trajectoryResolution];
-        trajectoryLine.positionCount = trajectoryResolution;
-
-        Vector2 currentPosition = transform.position; // Mulai dari posisi player
-
-        // 4. Loop untuk menghitung posisi di masa depan
-        for (int i = 0; i < trajectoryResolution; i++)
-        {
-            // Hitung waktu 't' untuk titik ini
-            float t = i * (trajectoryTime / trajectoryResolution);
-
-            // RUMUS FISIKA PROYEKTIL:
-            // Posisi = PosisiAwal + (Vel * t) + (0.5 * Gravitasi * t^2)
-            Vector2 movement = startVelocity * t;
-            Vector2 gravity = 0.5f * Physics2D.gravity * rb.gravityScale * (t * t);
-            
-            Vector2 newPosition = (Vector2)transform.position + movement + gravity;
-
-            // (Opsional) Cek Tabrakan agar garis tidak tembus tembok
-            if (i > 0)
-            {
-                Vector2 previousPoint = points[i - 1];
-                Vector2 direction = newPosition - previousPoint;
-                float distance = direction.magnitude;
-
-                RaycastHit2D hit = Physics2D.Raycast(previousPoint, direction, distance, trajectoryCollisionMask);
-                if (hit.collider != null)
-                {
-                    // Jika nabrak, set sisa titik ke titik tabrakan dan berhenti
-                    for (int j = i; j < trajectoryResolution; j++)
-                    {
-                        points[j] = hit.point;
-                    }
-                    break; // Keluar dari loop
-                }
-            }
-
-            points[i] = newPosition;
-        }
-
-        // 5. Terapkan ke LineRenderer
-        trajectoryLine.SetPositions(points);
     }
 
     // ✅ Wall bounce tetap pakai leftWallCheck & rightWallCheck (dari samping)
