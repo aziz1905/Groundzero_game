@@ -48,6 +48,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("Effects")]
     public ParticleSystem jumpDust;
+    public ParticleSystem landDust;
+    
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -58,6 +60,7 @@ public class PlayerController : MonoBehaviour
     private float wallBounceTimer;
     private bool isOnIce = false;
     private int facingDirection = 1;
+    private bool wasGrounded;
 
     private Animator animator;
     private AudioSource myAudioSource;
@@ -86,7 +89,6 @@ public class PlayerController : MonoBehaviour
     {
         bool wasGrounded = isGrounded;
         
-        // ✅ CEK GROUND: Hanya dari bawah player
         isGrounded = CheckIfGrounded();
 
         if (isGrounded && !wasGrounded)
@@ -96,6 +98,17 @@ public class PlayerController : MonoBehaviour
                 myAudioSource.PlayOneShot(landSound);
             }
         }
+        
+        bool isLanding = !wasGrounded && isGrounded;
+
+        if (isLanding)
+        {
+            if (landDust != null)
+                landDust.Play();
+        }
+        
+        // PENTING: Update status untuk frame berikutnya
+        wasGrounded = isGrounded;
 
         if (isGrounded && isWallBouncing)
             isWallBouncing = false;
