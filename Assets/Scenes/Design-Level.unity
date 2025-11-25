@@ -47055,6 +47055,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 428384935349208587, guid: 83d580608dba5e44392050f97b024157, type: 3}
+      propertyPath: m_Size.x
+      value: 0.23342323
+      objectReference: {fileID: 0}
+    - target: {fileID: 428384935349208587, guid: 83d580608dba5e44392050f97b024157, type: 3}
+      propertyPath: m_Offset.x
+      value: 0.0006608963
+      objectReference: {fileID: 0}
     - target: {fileID: 2842344017720365230, guid: 83d580608dba5e44392050f97b024157, type: 3}
       propertyPath: m_SortingOrder
       value: 100
@@ -126920,7 +126928,7 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1877654182}
-  m_Enabled: 1
+  m_Enabled: 0
   m_Density: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
