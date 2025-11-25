@@ -72,7 +72,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 1
+    textureCompression: 0
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -110,13 +110,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: UI_Button-Sheet_0
+      name: UI_Button-Play-Default
       rect:
         serializedVersion: 2
-        x: 4
-        y: 391
-        width: 39
-        height: 35
+        x: 0
+        y: 384
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -131,13 +131,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_1
+      name: UI_Button-Play-Pressed
       rect:
         serializedVersion: 2
-        x: 53
-        y: 391
-        width: 39
-        height: 33
+        x: 48
+        y: 384
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -152,13 +152,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_2
+      name: UI_Button-Pause-Default
       rect:
         serializedVersion: 2
-        x: 4
-        y: 343
-        width: 39
-        height: 35
+        x: 0
+        y: 336
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -173,13 +173,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_3
+      name: UI_Button-Pause-Pressed
       rect:
         serializedVersion: 2
-        x: 53
-        y: 343
-        width: 39
-        height: 33
+        x: 48
+        y: 336
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -194,13 +194,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_4
+      name: UI_Button-Retry-Default
       rect:
         serializedVersion: 2
-        x: 4
-        y: 298
-        width: 39
-        height: 35
+        x: 0
+        y: 288
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -215,13 +215,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_5
+      name: UI_Button-Retry-Pressed
       rect:
         serializedVersion: 2
-        x: 53
-        y: 298
-        width: 39
-        height: 33
+        x: 48
+        y: 288
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -236,13 +236,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_6
+      name: UI_Button-Volume-High-Default
       rect:
         serializedVersion: 2
-        x: 3
-        y: 250
-        width: 39
-        height: 35
+        x: 0
+        y: 240
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -257,13 +257,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_7
+      name: UI_Button-Volume-High-Pressed
       rect:
         serializedVersion: 2
-        x: 53
-        y: 250
-        width: 39
-        height: 33
+        x: 48
+        y: 240
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -278,13 +278,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_8
+      name: UI_Button-Volume-Low-Default
       rect:
         serializedVersion: 2
-        x: 98
-        y: 250
-        width: 39
-        height: 35
+        x: 96
+        y: 240
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -299,13 +299,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_9
+      name: UI_Button-Volume-Low-Pressed
       rect:
         serializedVersion: 2
-        x: 142
-        y: 250
-        width: 39
-        height: 33
+        x: 144
+        y: 240
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -320,13 +320,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_10
+      name: UI_Button-Volume-Off-Default
       rect:
         serializedVersion: 2
-        x: 3
-        y: 206
-        width: 39
-        height: 35
+        x: 0
+        y: 193
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -341,13 +341,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_11
+      name: UI_Button-Volume-Off-Pressed
       rect:
         serializedVersion: 2
-        x: 55
-        y: 206
-        width: 39
-        height: 33
+        x: 51
+        y: 192
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -362,13 +362,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_12
+      name: UI_Button-Volume2-High-Default
       rect:
         serializedVersion: 2
-        x: 108
-        y: 212
-        width: 25
-        height: 19
+        x: 96
+        y: 192
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -383,13 +383,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_13
+      name: UI_Button-Volume2-Low-Default
       rect:
         serializedVersion: 2
-        x: 150
-        y: 212
-        width: 22
-        height: 19
+        x: 144
+        y: 192
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -404,13 +404,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_14
+      name: UI_Button-Sheet_Setting-Default
       rect:
         serializedVersion: 2
-        x: 2
-        y: 162
-        width: 39
-        height: 35
+        x: 0
+        y: 144
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -425,13 +425,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_15
+      name: UI_Button-Sheet_Setting-Pressed
       rect:
         serializedVersion: 2
-        x: 54
-        y: 162
-        width: 39
-        height: 33
+        x: 48
+        y: 145
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -446,13 +446,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_16
+      name: UI_Button-Volume-Of-Default
       rect:
         serializedVersion: 2
-        x: 108
-        y: 181
-        width: 23
-        height: 21
+        x: 96
+        y: 144
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -467,13 +467,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_17
+      name: UI_Button-Sheet_Exit-Default
       rect:
         serializedVersion: 2
-        x: 2
-        y: 116
-        width: 39
-        height: 35
+        x: 0
+        y: 97
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -488,13 +488,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_18
+      name: UI_Button-Sheet_Exit-Pressed
       rect:
         serializedVersion: 2
-        x: 53
-        y: 116
-        width: 39
-        height: 33
+        x: 48
+        y: 96
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -509,13 +509,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_19
+      name: UI_Button-Sheet_Maximize-Default
       rect:
         serializedVersion: 2
-        x: 2
-        y: 76
-        width: 39
-        height: 35
+        x: 0
+        y: 48
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -530,13 +530,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: UI_Button-Sheet_20
+      name: UI_Button-Sheet_Maximize-Pressed
       rect:
         serializedVersion: 2
-        x: 51
-        y: 76
-        width: 39
-        height: 33
+        x: 48
+        y: 48
+        width: 48
+        height: 48
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -561,27 +561,27 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      UI_Button-Sheet_0: 100314801
-      UI_Button-Sheet_1: 411489763
-      UI_Button-Sheet_10: -1872506785
-      UI_Button-Sheet_11: -1112038978
-      UI_Button-Sheet_12: -1487798508
-      UI_Button-Sheet_13: 1860768163
-      UI_Button-Sheet_14: -1571089650
-      UI_Button-Sheet_15: -1399587065
-      UI_Button-Sheet_16: -507289055
-      UI_Button-Sheet_17: -713571576
-      UI_Button-Sheet_18: 1515527626
-      UI_Button-Sheet_19: -1930464418
-      UI_Button-Sheet_2: 67357371
-      UI_Button-Sheet_20: 519098240
-      UI_Button-Sheet_3: -985488865
-      UI_Button-Sheet_4: -1130423240
-      UI_Button-Sheet_5: -1474805406
-      UI_Button-Sheet_6: -1973551724
-      UI_Button-Sheet_7: 132326189
-      UI_Button-Sheet_8: -1511057988
-      UI_Button-Sheet_9: 1535232354
+      UI_Button-Pause-Default: 67357371
+      UI_Button-Pause-Pressed: -985488865
+      UI_Button-Play-Default: 100314801
+      UI_Button-Play-Pressed: 411489763
+      UI_Button-Retry-Default: -1130423240
+      UI_Button-Retry-Pressed: -1474805406
+      UI_Button-Sheet_Exit-Default: -713571576
+      UI_Button-Sheet_Exit-Pressed: 1515527626
+      UI_Button-Sheet_Maximize-Default: -1930464418
+      UI_Button-Sheet_Maximize-Pressed: 519098240
+      UI_Button-Sheet_Setting-Default: -1571089650
+      UI_Button-Sheet_Setting-Pressed: -1399587065
+      UI_Button-Volume-High-Default: -1973551724
+      UI_Button-Volume-High-Pressed: 132326189
+      UI_Button-Volume-Low-Default: -1511057988
+      UI_Button-Volume-Low-Pressed: 1535232354
+      UI_Button-Volume-Of-Default: -507289055
+      UI_Button-Volume-Off-Default: -1872506785
+      UI_Button-Volume-Off-Pressed: -1112038978
+      UI_Button-Volume2-High-Default: -1487798508
+      UI_Button-Volume2-Low-Default: 1860768163
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
