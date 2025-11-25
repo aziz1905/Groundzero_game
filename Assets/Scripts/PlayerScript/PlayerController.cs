@@ -331,6 +331,15 @@ public class PlayerController : MonoBehaviour
         transform.position = respawnPosition;
         rb.velocity = Vector2.zero;
 
+        if (Checkpoint.activeCheckpoint != null)
+        {
+            GameObject respawnCamera = Checkpoint.activeCheckpoint.GetCheckpointCamera();
+            if (respawnCamera != null)
+            {
+                SwitchingCameraZone.ActivateStageCamera(respawnCamera);
+            }
+        }
+
         if(DeathHandler != null)
         {
             DeathHandler.ResetPhysics();
