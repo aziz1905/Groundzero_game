@@ -49,6 +49,7 @@ public class PlayerController : MonoBehaviour
     [Header("Effects")]
     public ParticleSystem jumpDust;
     public ParticleSystem landDust;
+    
 
     // === Internal Control ===
     private Rigidbody2D rb;
@@ -87,7 +88,8 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         bool wasGrounded = isGrounded;
-        isGrounded = Physics2D.OverlapCircle(groundCheck.position, groundRadius, walkableLayers);
+        
+        isGrounded = CheckIfGrounded();
 
         if (isGrounded && !wasGrounded)
         {
@@ -98,40 +100,42 @@ public class PlayerController : MonoBehaviour
         }
         
         bool isLanding = !wasGrounded && isGrounded;
+
         if (isLanding)
         {
-            if (landDust != null) landDust.Play();
+            if (landDust != null)
+                landDust.Play();
         }
         
-        wasGrounded = isGrounded; // Update untuk frame depan
+        // PENTING: Update status untuk frame berikutnya
+        wasGrounded = isGrounded;
 
         if (isGrounded && isWallBouncing)
             isWallBouncing = false;
 
         if (isChargingJump && !isGrounded)
         {
-            CancelCharge(); 
+            isChargingJump = false;
+            if (chargeIndicator != null)
+                chargeIndicator.StopCharge();
+
+            if (animator != null)
+                animator.SetBool("isCharging", false);
         }
 
-        // Pengaman tambahan: Jika player jatuh cepat saat charge
-        if (isChargingJump && rb.velocity.y < -0.5f)
-        {
-            CancelCharge();
-        }
-        // ================================================================
-
-        // --- 3. Input Charge (Mulai) ---
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
         {
             isChargingJump = true;
             rb.velocity = new Vector2(0, rb.velocity.y);
             jumpDirection = facingDirection;
 
-            if (chargeIndicator != null) chargeIndicator.StartCharge();
-            if (animator != null) animator.SetBool("isCharging", true);
+            if (chargeIndicator != null)
+                chargeIndicator.StartCharge();
+
+            if (animator != null)
+                animator.SetBool("isCharging", true);
         }
 
-        // --- 4. Input Charge (Tahan - Arah) ---
         if (isChargingJump)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -139,7 +143,6 @@ public class PlayerController : MonoBehaviour
                 jumpDirection = Mathf.Sign(horizontalInput);
         }
 
-        // --- 5. Input Charge (Lepas - Loncat) ---
         if (Input.GetKeyUp(KeyCode.Space) && isChargingJump)
         {
             if (animator != null)
@@ -152,10 +155,10 @@ public class PlayerController : MonoBehaviour
             PerformJump();
             isChargingJump = false;
 
-            if (chargeIndicator != null) chargeIndicator.StopCharge();
+            if (chargeIndicator != null)
+                chargeIndicator.StopCharge();
         }
 
-        // --- 6. Gerakan Biasa (Jalan) ---
         if (!isChargingJump && isGrounded && !isWallBouncing)
         {
             float horizontalInput = Input.GetAxisRaw("Horizontal");
@@ -189,27 +192,22 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private void CancelCharge()
+
+    // ✅ FUNGSI BARU: Cek ground dengan raycast dari bawah
+    private bool CheckIfGrounded()
     {
-        if (!isChargingJump) return;
+        // Raycast dari tengah player ke bawah (lebih akurat)
+        RaycastHit2D hit = Physics2D.Raycast(
+            groundCheck.position, 
+            Vector2.down, 
+            groundRadius, 
+            walkableLayers
+        );
 
-        isChargingJump = false;
+        // Debug line untuk lihat raycast (hapus nanti kalau sudah oke)
+        Debug.DrawRay(groundCheck.position, Vector2.down * groundRadius, hit ? Color.green : Color.red);
 
-        // Matikan UI
-        if (chargeIndicator != null) 
-            chargeIndicator.StopCharge();
-
-        // Update Animator:
-        if (animator != null)
-        {
-            animator.SetBool("isCharging", false);
-            
-            // PENTING: Paksa animator sadar kalau dia sedang di udara
-            // Ini memicu transisi ke animasi Jump/Fall agar tidak nyangkut jongkok
-            animator.SetBool("isJumping", true); 
-
-            animator.Play("Kodok-Idle-R_Clip");
-        }
+        return hit.collider != null;
     }
 
     private void PerformJump()
@@ -232,7 +230,7 @@ public class PlayerController : MonoBehaviour
         myAudioSource.PlayOneShot(jumpSound);
     }
 
-    // Wall bounce check
+    // ✅ Wall bounce tetap pakai leftWallCheck & rightWallCheck (dari samping)
     private bool IsOnLeftWall() => Physics2D.OverlapCircle(leftWallCheck.position, wallCheckDistance, wallLayer);
     private bool IsOnRightWall() => Physics2D.OverlapCircle(rightWallCheck.position, wallCheckDistance, wallLayer);
 
@@ -309,8 +307,12 @@ public class PlayerController : MonoBehaviour
 
         if (isChargingJump)
         {
-            // Pakai CancelCharge di sini juga biar rapi
-            CancelCharge();
+            isChargingJump = false;
+            if (chargeIndicator != null)
+                chargeIndicator.StopCharge();
+
+            if (animator != null)
+                animator.SetBool("isCharging", false);
         }
 
         if (animator != null)
