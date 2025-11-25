@@ -11,6 +11,9 @@ public class Checkpoint : MonoBehaviour
     [SerializeField] private AudioClip activationSound;
     private AudioSource audioSource;
 
+    [Header("Camera")]
+    [SerializeField] private GameObject checkpointCamera;
+
     private bool isActivated = false;
 
     private void Awake()
@@ -42,6 +45,11 @@ public class Checkpoint : MonoBehaviour
         anim.SetBool("isActivated", true); 
         activeCheckpoint = this;
         if (activationSound != null) audioSource.PlayOneShot(activationSound);
+
+        if (checkpointCamera != null)
+        {
+            SwitchingCameraZone.ActivateStageCamera(checkpointCamera);
+        }
     }
 
     public void Deactivate()
@@ -49,5 +57,10 @@ public class Checkpoint : MonoBehaviour
         isActivated = false;
         // Beri tahu Animator untuk MATI
         anim.SetBool("isActivated", false);
+    }
+
+    public GameObject GetCheckpointCamera()
+    {
+        return checkpointCamera;
     }
 }
