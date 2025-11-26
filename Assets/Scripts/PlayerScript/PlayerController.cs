@@ -114,7 +114,7 @@ public class PlayerController : MonoBehaviour
         }
 
         // Pengaman tambahan: Jika player jatuh cepat saat charge
-        if (isChargingJump && rb.velocity.y < -0.5f)
+        if (isChargingJump && rb.velocity.y < -5.0f)
         {
             CancelCharge();
         }
