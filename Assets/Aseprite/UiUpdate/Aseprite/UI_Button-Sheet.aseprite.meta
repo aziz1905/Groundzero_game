@@ -143,7 +143,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: -26, y: -25}
   spriteSheetImportData:
-  - name: UI_Button-Sheet_0
+  - name: UI_Button-Play-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -163,7 +163,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_1
+  - name: UI_Button-Play-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -183,7 +183,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_2
+  - name: UI_Button-Pause-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -203,7 +203,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_3
+  - name: UI_Button-Pause-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -223,7 +223,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_4
+  - name: UI_Button-Restart-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -243,7 +243,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_5
+  - name: UI_Button-Restart-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -263,7 +263,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_6
+  - name: UI_Button-Volume-High-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -283,7 +283,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_7
+  - name: UI_Button-Volume-High-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -303,7 +303,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_8
+  - name: UI_Button-Volume-Low-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -323,7 +323,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_9
+  - name: UI_Button-Volume-Low-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -343,7 +343,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_10
+  - name: UI_Button-Volume2-High
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -363,7 +363,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_11
+  - name: UI_Button-Volume2-Low
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -383,7 +383,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_12
+  - name: UI_Button-NoVolume2
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -403,7 +403,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_13
+  - name: UI_Button-NoVolume-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -423,7 +423,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_14
+  - name: UI_Button-NoVolume-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -443,14 +443,14 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_15
+  - name: UI_Button-Setting-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 1350
+      x: 1349
       y: 5
       width: 39
       height: 35
@@ -463,7 +463,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_16
+  - name: UI_Button-Setting-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -483,7 +483,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_17
+  - name: UI_Button-Exit-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -503,15 +503,15 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_18
+  - name: UI_Button-Exit-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
     border: {x: 0, y: 0, z: 0, w: 0}
     rect:
       serializedVersion: 2
-      x: 1621
-      y: 7
+      x: 1619
+      y: 9
       width: 39
       height: 33
     spriteID: 1a3ef4c9490215b49bc2e94b1cfd0d9f
@@ -523,7 +523,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_19
+  - name: UI_Button-Maximize-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -543,7 +543,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_20
+  - name: UI_Button-Maximize-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -563,7 +563,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_21
+  - name: UI_Button-Quit-Default
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -583,7 +583,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_22
+  - name: UI_Button-Quit-Pressed
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -603,7 +603,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_23
+  - name: UI_Button-Back
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -623,7 +623,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
-  - name: UI_Button-Sheet_24
+  - name: UI_Button-Next
     originalName: 
     pivot: {x: 0.5, y: 0.5}
     alignment: 0
@@ -660,10 +660,10 @@ ScriptedImporter:
       frameIndex: 0
       additiveSortOrder: 0
       cellRect:
-        x: 0
-        y: 0
-        width: 2250
-        height: 90
+        x: 30
+        y: 29
+        width: 2190
+        height: 38
       spriteId: 624d5d59700850f4bb91a762cafeb4e5
     linkedCells: []
     parentIndex: -1
