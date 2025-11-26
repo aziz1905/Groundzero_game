@@ -66,5 +66,4 @@ public class SettingsMenu : MonoBehaviour
         PlayerPrefs.SetFloat(MIXER_SFX, sliderValue);
     }
 
-    
 }
