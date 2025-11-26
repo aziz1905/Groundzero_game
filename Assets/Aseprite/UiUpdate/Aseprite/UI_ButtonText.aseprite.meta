@@ -122,7 +122,7 @@ ScriptedImporter:
     tessellationDetail: 0
     uvTransform: {x: 0, y: 0}
   animatedSpriteImportData:
-  - name: Frame_0
+  - name: Start-Default
     originalName: 
     pivot: {x: 0.49230772, y: -0.6785714}
     alignment: 9
@@ -130,7 +130,7 @@ ScriptedImporter:
     rect:
       serializedVersion: 2
       x: 4
-      y: 205
+      y: 204
       width: 130
       height: 56
     spriteID: 6ddcdf13b2080284090254476fbd6cc6
@@ -142,7 +142,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: -2, y: 167}
-  - name: Frame_1
+  - name: Start-Pressed
     originalName: 
     pivot: {x: 0.48854965, y: -0.5932204}
     alignment: 9
@@ -162,17 +162,17 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: -2, y: -31}
-  - name: Frame_2
+  - name: Credits-Default
     originalName: 
     pivot: {x: 0.4846154, y: -0.625}
     alignment: 9
-    border: {x: 0, y: 0, z: 0, w: 0}
+    border: {x: 0, y: 0, z: 0, w: 1}
     rect:
       serializedVersion: 2
-      x: 4
+      x: 3
       y: 269
-      width: 130
-      height: 56
+      width: 131
+      height: 57
     spriteID: b24e0a33fed8c7e41ac23bbca677948d
     spriteBone: []
     spriteOutline: []
@@ -182,7 +182,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: -3, y: 234}
-  - name: Frame_3
+  - name: Credits-Pressed
     originalName: 
     pivot: {x: 0.48091605, y: -0.5423729}
     alignment: 9
@@ -202,7 +202,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: -3, y: 39}
-  - name: Frame_4
+  - name: HowToPlay-Default
     originalName: 
     pivot: {x: 0.49230772, y: -0.42857143}
     alignment: 9
@@ -222,7 +222,7 @@ ScriptedImporter:
     edges: []
     tessellationDetail: 0
     uvTransform: {x: -2, y: 309}
-  - name: Frame_5
+  - name: HowToPlay-Pressed
     originalName: 
     pivot: {x: 0.48854965, y: -0.3559322}
     alignment: 9
