@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 1
+  spriteMode: 2
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,7 +108,91 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Map4FogLohYak_0
+      rect:
+        serializedVersion: 2
+        x: 225
+        y: 7026
+        width: 3048
+        height: 1538
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2809f66b8894aae4fb1c3ea4ade28414
+      internalID: -1166193909
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map4FogLohYak_1
+      rect:
+        serializedVersion: 2
+        x: 195
+        y: 5459
+        width: 3000
+        height: 884
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 96c93ebb3f2feb84f9f241ee19d2b9bc
+      internalID: -2037192276
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map4FogLohYak_2
+      rect:
+        serializedVersion: 2
+        x: 577
+        y: 4145
+        width: 2447
+        height: 259
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f3240ebd7bb114f4aaf837158cf24771
+      internalID: -875354674
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Map4FogLohYak_3
+      rect:
+        serializedVersion: 2
+        x: 508
+        y: 2905
+        width: 2453
+        height: 406
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d0f00f56a1d0b424aa23300ddc3fa9c0
+      internalID: -2088325164
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     physicsShape: []
     bones: []
@@ -119,7 +203,11 @@ TextureImporter:
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Map4FogLohYak_0: -1166193909
+      Map4FogLohYak_1: -2037192276
+      Map4FogLohYak_2: -875354674
+      Map4FogLohYak_3: -2088325164
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
