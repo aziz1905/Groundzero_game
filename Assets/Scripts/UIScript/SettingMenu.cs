@@ -59,17 +59,30 @@ public void SetSFXVolume(float sliderValue)
     }
     
     // Lakukan hal yang sama untuk Master dan BGM
+// 1. SETTING MASTER (Dikurangi sedikit, misal -5dB biar gak pecah)
     public void SetMasterVolume(float sliderValue)
     {
         float value = Mathf.Max(sliderValue, 0.0001f);
-        mainMixer.SetFloat(MIXER_MASTER, Mathf.Log10(value) * 20);
+        
+        // Rumus Lama: Mathf.Log10(value) * 20; (Hasil Max: 0 dB)
+        
+        // Rumus Baru: Kurangi 5 atau 10
+        float db = (Mathf.Log10(value) * 20) - 5f; 
+
+        mainMixer.SetFloat(MIXER_MASTER, db);
         PlayerPrefs.SetFloat(MIXER_MASTER, value);
     }
 
+    // 2. SETTING BGM (Music biasanya harus lebih pelan dari SFX/Master)
     public void SetBGMVolume(float sliderValue)
     {
         float value = Mathf.Max(sliderValue, 0.0001f);
-        mainMixer.SetFloat(MIXER_BGM, Mathf.Log10(value) * 20);
+        
+        // Kurangi lebih banyak (misal -15dB) agar Musik jadi background aja
+        // Jadi pas Slider 100%, musiknya tetap enak didengar & gak balapan sama SFX
+        float db = (Mathf.Log10(value) * 20) - 15f; 
+
+        mainMixer.SetFloat(MIXER_BGM, db);
         PlayerPrefs.SetFloat(MIXER_BGM, value);
     }
 
