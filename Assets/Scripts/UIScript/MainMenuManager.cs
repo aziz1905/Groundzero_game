@@ -22,8 +22,21 @@ public class MainMenuManager : MonoBehaviour
     public GameObject infoPanel;          // Referensi ke Panel Hitam (Wadah)
     public TextMeshProUGUI titleText;
 
+    [SerializeField] private Button quitButton; // Tarik tombol Exit ke sini di Inspector
+
     // 1. Fungsi untuk Tombol START
     //    Pastikan "NamaSceneGameAnda" sesuai nama file scene game Anda.
+
+    void Start()
+    {
+        // KODE SAKTI:
+        // Cek apakah game ini sedang berjalan di WebGL?
+        #if UNITY_WEBGL
+            // Jika YA (di Web/itch.io), matikan tombol Quit
+            if (quitButton != null) 
+                quitButton.gameObject.SetActive(false);
+        #endif
+    }
     public void StartGame()
     {
         // Ganti "Level_1" dengan nama scene game Anda
@@ -48,7 +61,10 @@ public class MainMenuManager : MonoBehaviour
         infoPanel.SetActive(true);      // 1. Nyalakan Panel
         titleText.text = judul;         // 2. Ubah Teks Judul sesuai parameter
     }
-
+    public void OpenSettingsPanel(string judul)
+    {
+        infoPanel.SetActive(true);      // 1. Nyalakan Pane
+    }
     // FUNGSI 2: Tutup Panel
     public void CloseInfoPanel()
     {
@@ -88,7 +104,7 @@ public class MainMenuManager : MonoBehaviour
 
     public void QuitGame()
     {
-        Debug.Log("QUIT GAME!"); // Pesan ini untuk testing di Editor
-        Application.Quit(); // Ini hanya berfungsi di game yang sudah di-build
+        Debug.Log("QUIT GAME!");
+        Application.Quit();
     }
 }
