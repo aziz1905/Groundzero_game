@@ -45,25 +45,32 @@ public class SettingsMenu : MonoBehaviour
 
     // --- FUNGSI YANG DIPANGGIL OLEH SLIDER ---
 
+public void SetSFXVolume(float sliderValue)
+    {
+        // PENTING: Cegah nilai 0 murni agar tidak error Log10
+        // Kita paksa minimal 0.0001
+        float value = Mathf.Max(sliderValue, 0.0001f);
+
+        // Rumus Logaritma
+        float db = Mathf.Log10(value) * 20;
+
+        mainMixer.SetFloat(MIXER_SFX, db);
+        PlayerPrefs.SetFloat(MIXER_SFX, value);
+    }
+    
+    // Lakukan hal yang sama untuk Master dan BGM
     public void SetMasterVolume(float sliderValue)
     {
-        // Ubah volume mixer (Logaritma)
-        mainMixer.SetFloat(MIXER_MASTER, Mathf.Log10(sliderValue) * 20);
-        
-        // Simpan data
-        PlayerPrefs.SetFloat(MIXER_MASTER, sliderValue);
+        float value = Mathf.Max(sliderValue, 0.0001f);
+        mainMixer.SetFloat(MIXER_MASTER, Mathf.Log10(value) * 20);
+        PlayerPrefs.SetFloat(MIXER_MASTER, value);
     }
 
     public void SetBGMVolume(float sliderValue)
     {
-        mainMixer.SetFloat(MIXER_BGM, Mathf.Log10(sliderValue) * 20);
-        PlayerPrefs.SetFloat(MIXER_BGM, sliderValue);
-    }
-
-    public void SetSFXVolume(float sliderValue)
-    {
-        mainMixer.SetFloat(MIXER_SFX, Mathf.Log10(sliderValue) * 20);
-        PlayerPrefs.SetFloat(MIXER_SFX, sliderValue);
+        float value = Mathf.Max(sliderValue, 0.0001f);
+        mainMixer.SetFloat(MIXER_BGM, Mathf.Log10(value) * 20);
+        PlayerPrefs.SetFloat(MIXER_BGM, value);
     }
 
 }
