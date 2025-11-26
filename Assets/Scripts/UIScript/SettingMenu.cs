@@ -25,7 +25,7 @@ public class SettingsMenu : MonoBehaviour
         // Saat game mulai, kita load volume terakhir yang disimpan
         // Jika belum ada save, default-nya 1 (Full Volume)
         
-        float masterVal = PlayerPrefs.GetFloat(MIXER_MASTER, 1f);
+        float masterVal = PlayerPrefs.GetFloat(MIXER_MASTER, 10f);
         float bgmVal = PlayerPrefs.GetFloat(MIXER_BGM, 1f);
         float sfxVal = PlayerPrefs.GetFloat(MIXER_SFX, 1f);
 
