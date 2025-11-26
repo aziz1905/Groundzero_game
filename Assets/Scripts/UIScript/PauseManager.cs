@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems; // Tambahkan ini jika ingin menghapus highlight tombol saat resume
+using UnityEngine.EventSystems;
 
 public class PauseManager : MonoBehaviour
 {
@@ -8,7 +8,7 @@ public class PauseManager : MonoBehaviour
 
     [Header("UI Panels")]
     [SerializeField] private GameObject pausePanel;
-    [SerializeField] private GameObject settingsPanel; // <--- BARU: Referensi ke Panel Settings
+    [SerializeField] private GameObject settingsPanel;
 
     [Header("Main Buttons")]
     [SerializeField] private Button pauseButton;
@@ -17,7 +17,7 @@ public class PauseManager : MonoBehaviour
     [SerializeField] private Button quitButton;
     
     [Header("Settings UI")]
-    [SerializeField] private Button backFromSettingsButton; // <--- BARU: Tombol "Back" di dalam panel setting
+    [SerializeField] private Button backFromSettingsButton;
 
     [Header("Pause Button Sprites")]
     [SerializeField] private Image pauseButtonImage;
@@ -40,38 +40,67 @@ public class PauseManager : MonoBehaviour
 
     void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
     }
 
     void Start()
     {
-        // 1. Pastikan Panel Setting mati saat awal game
+        // Pastikan semua panel mati saat awal game
         if (pausePanel != null) pausePanel.SetActive(false);
-        if (settingsPanel != null) settingsPanel.SetActive(false); // <--- BARU
+        if (settingsPanel != null) settingsPanel.SetActive(false);
 
         // Setup Listeners
-        if (pauseButton != null) pauseButton.onClick.AddListener(TogglePause);
+        if (pauseButton != null) pauseButton.onClick.AddListener(OnPauseButtonClicked);
         if (resumeButton != null) resumeButton.onClick.AddListener(ResumeGame);
         if (settingsButton != null) settingsButton.onClick.AddListener(OpenSettings);
         if (quitButton != null) quitButton.onClick.AddListener(QuitGame);
+        if (backFromSettingsButton != null) backFromSettingsButton.onClick.AddListener(CloseSettings);
 
-        // 2. Tambahkan Listener untuk tombol Back
-        if (backFromSettingsButton != null) 
-            backFromSettingsButton.onClick.AddListener(CloseSettings); // <--- BARU
-
+        // Set sprite awal ke Pause
         SetPauseButtonSprites(pauseNormalSprite, pauseHighlightedSprite, pausePressedSprite);
     }
 
     void Update()
     {
-        // Kosong
+        // Shortcut ESC untuk pause/resume
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (!isPaused)
+            {
+                PauseGame();
+            }
+            else if (settingsPanel != null && settingsPanel.activeSelf)
+            {
+                // Kalau settings panel terbuka, ESC = back to pause menu
+                CloseSettings();
+            }
+            else
+            {
+                // Kalau pause panel terbuka, ESC = resume
+                ResumeGame();
+            }
+        }
     }
 
-    public void TogglePause()
+    // Handle klik tombol pause (kanan atas)
+    private void OnPauseButtonClicked()
     {
-        if (!isPaused) PauseGame();
-        else ResumeGame();
+        if (!isPaused)
+        {
+            PauseGame();
+        }
+        else
+        {
+            // Kalau udah pause, tombol ini jadi resume
+            ResumeGame();
+        }
     }
 
     public void PauseGame()
@@ -80,10 +109,11 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 0f;
         
         if (pausePanel != null) pausePanel.SetActive(true);
-        if (settingsPanel != null) settingsPanel.SetActive(false); // <--- BARU: Pastikan setting tertutup
+        if (settingsPanel != null) settingsPanel.SetActive(false);
         
         if (playerController != null) playerController.enabled = false;
 
+        // Ganti ke sprite Play (Resume)
         SetPauseButtonSprites(playNormalSprite, playHighlightedSprite, playPressedSprite);
     }
 
@@ -93,33 +123,30 @@ public class PauseManager : MonoBehaviour
         Time.timeScale = 1f;
         
         if (pausePanel != null) pausePanel.SetActive(false);
-        if (settingsPanel != null) settingsPanel.SetActive(false); // <--- BARU: Tutup setting juga jika player menekan resume shortcut (jika ada)
+        if (settingsPanel != null) settingsPanel.SetActive(false);
 
         // Hapus seleksi tombol agar tidak ada tombol yang 'nyangkut' warnanya
         if (EventSystem.current != null) EventSystem.current.SetSelectedGameObject(null);
 
         if (playerController != null) playerController.enabled = true;
 
+        // Kembalikan ke sprite Pause
         SetPauseButtonSprites(pauseNormalSprite, pauseHighlightedSprite, pausePressedSprite);
     }
 
-    // --- FUNGSI BARU UNTUK SETTINGS ---
-
+    // Buka Settings Panel
     private void OpenSettings()
     {
-        // Tutup Pause Panel, Buka Settings Panel
         if (pausePanel != null) pausePanel.SetActive(false);
         if (settingsPanel != null) settingsPanel.SetActive(true);
     }
 
+    // Tutup Settings Panel, kembali ke Pause Panel
     private void CloseSettings()
     {
-        // Tutup Settings Panel, Balik ke Pause Panel
         if (settingsPanel != null) settingsPanel.SetActive(false);
         if (pausePanel != null) pausePanel.SetActive(true);
     }
-
-    // ----------------------------------
 
     private void SetPauseButtonSprites(Sprite normal, Sprite highlighted, Sprite pressed)
     {
@@ -153,13 +180,11 @@ public class PauseManager : MonoBehaviour
 
     void OnDestroy()
     {
-        if (pauseButton != null) pauseButton.onClick.RemoveListener(TogglePause);
+        // Cleanup listeners
+        if (pauseButton != null) pauseButton.onClick.RemoveListener(OnPauseButtonClicked);
         if (resumeButton != null) resumeButton.onClick.RemoveListener(ResumeGame);
         if (settingsButton != null) settingsButton.onClick.RemoveListener(OpenSettings);
         if (quitButton != null) quitButton.onClick.RemoveListener(QuitGame);
-        
-        // Bersihkan listener tombol back
-        if (backFromSettingsButton != null) 
-            backFromSettingsButton.onClick.RemoveListener(CloseSettings); // <--- BARU
+        if (backFromSettingsButton != null) backFromSettingsButton.onClick.RemoveListener(CloseSettings);
     }
 }

@@ -1,20 +1,25 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
-// TANGGUNG JAWAB:
-// 1. Attach di prefab Coin
-// 2. Detect collision dengan Player
-// 3. Play SFX & destroy coin (pure gimmick)
 public class CoinCollector : MonoBehaviour
 {
     [Header("Audio")]
-    [SerializeField] private AudioClip coinSFX; // Drag audio clip di sini
+    [SerializeField] private AudioClip coinSFX;
+    [SerializeField] private AudioMixerGroup sfxMixerGroup;
     
     [Header("Optional - Particle Effect")]
-    [SerializeField] private GameObject collectEffect; // Particle saat diambil (optional)
+    [SerializeField] private GameObject collectEffect;
+
+    private ResettableCoin resettableCoin; // ✅ TAMBAHAN
+
+    private void Awake()
+    {
+        // ✅ Ambil reference ke ResettableCoin
+        resettableCoin = GetComponent<ResettableCoin>();
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // Cek apakah yang nabrak adalah Player
         if (collision.CompareTag("Player"))
         {
             CollectCoin();
@@ -26,24 +31,34 @@ public class CoinCollector : MonoBehaviour
         // 1. Play SFX
         if (coinSFX != null)
         {
-            // Pakai AudioSource.PlayClipAtPoint biar audio tetep kedengeran
-            // meskipun gameObject-nya udah di-destroy
-            AudioSource.PlayClipAtPoint(coinSFX, transform.position, 1f);
+            GameObject tempGO = new GameObject("TempAudio");
+            AudioSource tempSource = tempGO.AddComponent<AudioSource>();
             
-            Debug.Log("SFX playing: " + coinSFX.name); // Debug check
-        }
-        else
-        {
-            Debug.LogWarning("Coin SFX belum di-assign!");
+            if (sfxMixerGroup != null)
+            {
+                tempSource.outputAudioMixerGroup = sfxMixerGroup;
+            }
+            
+            tempSource.clip = coinSFX;
+            tempSource.Play();
+            Destroy(tempGO, coinSFX.length);
         }
 
-        // 2. Spawn particle effect (optional)
+        // 2. Spawn particle effect
         if (collectEffect != null)
         {
             Instantiate(collectEffect, transform.position, Quaternion.identity);
         }
 
-        // 3. Destroy coin
-        Destroy(gameObject);
+        // 3. ✅ GANTI: Jangan destroy, tapi hide via ResettableCoin
+        if (resettableCoin != null)
+        {
+            resettableCoin.CollectCoin();
+        }
+        else
+        {
+            // Fallback kalau tidak ada ResettableCoin
+            Destroy(gameObject);
+        }
     }
 }
