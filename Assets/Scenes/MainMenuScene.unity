@@ -7327,17 +7327,20 @@ MonoBehaviour:
   inactiveColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   tutorialSteps:
   - title: PRECISION CHARGE JUMP
-    videoClip: {fileID: 32900000, guid: 95cc905badd81854497dfd24e8123507, type: 3}
+    videoClip: {fileID: 32900000, guid: 66e5ea92c2b84be49aeeebfea6c3c511, type: 3}
+    videoFileName: Slide1.mp4
     description: Hold [Space] to charge power and Release to jump in the direction
       determined by [A] or [D] input.
   - title: 'MASTERING THE REBOUND '
-    videoClip: {fileID: 32900000, guid: 67cb40dde92f87b45b318064f0cd882d, type: 3}
+    videoClip: {fileID: 32900000, guid: aa78df369a1f9d24c90e954c2c355948, type: 3}
+    videoFileName: Slide2.mp4
     description: 'Hit vertical walls to rebound and redirect your jump trajectory
       and momentum.
 
 '
   - title: Trap
-    videoClip: {fileID: 32900000, guid: 2259ec3a55d300441bc51698f332295c, type: 3}
+    videoClip: {fileID: 32900000, guid: 92859b5fd26ef9040a40b3d860ca1d0a, type: 3}
+    videoFileName: Slide3.mp4
     description: The world is designed to deceive you, memorize the traps to survive
       and claim victory.
 --- !u!224 &1852239576 stripped

@@ -1,25 +1,30 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Video;
-using TMPro; // Wajib untuk Teks
+using TMPro;
 using System.Collections.Generic;
+using System.IO; // Wajib untuk Path
 
 public class TutorialVideoSlideshow : MonoBehaviour
 {
-    // KELAS DATA BARU (Paket Video + Teks)
     [System.Serializable]
     public class TutorialStep
     {
-        public string title;        // Judul (Merah)
-        public VideoClip videoClip; // Video (Kuning)
+        public string title;        
+        
+        [Header("Video Settings")]
+        public VideoClip videoClip; // Dipakai saat Play di Unity Editor
+        [Tooltip("Wajib isi nama file lengkap untuk WebGL! Contoh: GIF1.mp4")]
+        public string videoFileName; // Dipakai saat Build WebGL (Contoh: "GIF1.mp4")
+
         [TextArea(3, 5)] 
-        public string description;  // Penjelasan (Hijau)
+        public string description;  
     }
 
     [Header("UI Components")]
-    [SerializeField] private TextMeshProUGUI titleText;       // UI Judul
-    [SerializeField] private VideoPlayer videoPlayer;         // Mesin Video
-    [SerializeField] private TextMeshProUGUI descriptionText; // UI Deskripsi
+    [SerializeField] private TextMeshProUGUI titleText;       
+    [SerializeField] private VideoPlayer videoPlayer;         
+    [SerializeField] private TextMeshProUGUI descriptionText; 
     
     [Header("Buttons")]
     [SerializeField] private Button nextButton;
@@ -32,7 +37,6 @@ public class TutorialVideoSlideshow : MonoBehaviour
     [SerializeField] private Color inactiveColor = Color.gray;
 
     [Header("Data Content")]
-    // Ganti array lama jadi array class baru
     [SerializeField] private TutorialStep[] tutorialSteps; 
 
     private int currentIndex = 0;
@@ -43,6 +47,10 @@ public class TutorialVideoSlideshow : MonoBehaviour
         nextButton.onClick.AddListener(OnNextClick);
         prevButton.onClick.AddListener(OnPrevClick);
         InitializeDots();
+        
+        // PENTING: Paksa render mode ke API Video yang benar
+        videoPlayer.renderMode = VideoRenderMode.RenderTexture; 
+        
         ShowStep(0);
     }
 
@@ -82,28 +90,40 @@ public class TutorialVideoSlideshow : MonoBehaviour
         }
     }
 
-    // FUNGSI UTAMA GANTI KONTEN
+    // --- BAGIAN INI YANG DIMODIFIKASI BIAR WEBGL JALAN ---
     private void ShowStep(int index)
     {
         if (tutorialSteps.Length == 0) return;
 
-        // 1. Ambil Data
         TutorialStep currentStep = tutorialSteps[index];
 
-        // 2. Update UI Teks
+        // 1. Update Teks
         titleText.text = currentStep.title;
         descriptionText.text = currentStep.description;
 
-        // 3. Update Video
-        videoPlayer.clip = currentStep.videoClip;
+        // 2. LOGIKA VIDEO HIBRIDA (EDITOR vs WEBGL)
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            // --- LOGIKA WEBGL ---
+            // Otomatis mencari file di folder StreamingAssets/Video
+            // Pastikan kamu sudah isi 'videoFileName' di Inspector!
+            string videoPath = Path.Combine(Application.streamingAssetsPath, "Video", currentStep.videoFileName);
+            
+            videoPlayer.source = VideoSource.Url;
+            videoPlayer.url = videoPath;
+        #else
+            // --- LOGIKA EDITOR / WINDOWS ---
+            // Pakai cara lama biar gampang preview
+            videoPlayer.source = VideoSource.VideoClip;
+            videoPlayer.clip = currentStep.videoClip;
+        #endif
+
         videoPlayer.Stop();
         videoPlayer.Play();
 
-        // 4. Update Tombol
+        // 3. Update Tombol & Dots
         prevButton.interactable = (index > 0);
         nextButton.interactable = (index < tutorialSteps.Length - 1);
 
-        // 5. Update Dots
         for (int i = 0; i < dotImages.Count; i++)
         {
             dotImages[i].color = (i == index) ? activeColor : inactiveColor;
