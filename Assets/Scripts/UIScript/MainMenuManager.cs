@@ -1,203 +1,140 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.UI;
-using TMPro;
 using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
     [Header("Panel Settings")]
-    public GameObject infoPanel;          // Panel universal untuk semua konten
-    public TextMeshProUGUI titleText;     // Title panel
-    public TextMeshProUGUI contentText;   // ✅ TAMBAHAN: Text untuk isi konten
+    public GameObject infoPanel;          // Panel universal pembungkus
     
     [Header("Panel Content Containers")]
-    public GameObject howToPlayContent;   // ✅ Container untuk How To Play
-    public GameObject creditsContent;     // ✅ Container untuk Credits
-    public GameObject settingsContent;    // ✅ Container untuk Settings
+    public GameObject howToPlayContent;   // Container untuk How To Play
+    public GameObject creditsContent;     // Container untuk Credits
+    public GameObject settingsContent;    // Container untuk Settings
     
     [Header("Audio Settings")]
-    public AudioMixer mainMixer;
-    public Slider musicSlider;
+    public AudioMixer mainMixer;          // WAJIB DRAG AUDIOMIXER
+    public Slider musicSlider;            // Slider di Panel Setting
     
     [Header("General UI")]
-    public GameObject dimBackground;
-    
+    public GameObject dimBackground;      // Background gelap (opsional)
     [SerializeField] private Button quitButton;
 
     void Start()
     {
+        // 1. Matikan tombol Quit di WebGL (karena gak guna)
         #if UNITY_WEBGL
             if (quitButton != null) 
                 quitButton.gameObject.SetActive(false);
         #endif
         
-        // ✅ Matikan semua panel konten di awal
-        CloseAllPanelContents();
+        // 2. Matikan semua panel konten di awal
+        CloseInfoPanel(); // Sekaligus matiin infoPanel dan isinya
+
+        // 3. --- FIX VOLUME STARTUP ---
+        // Load volume terakhir player, atau default ke Full
+        if (PlayerPrefs.HasKey("MasterVolume")) 
+        {
+            float savedVol = PlayerPrefs.GetFloat("MasterVolume");
+            
+            // Set Slider UI biar sinkron sama data tersimpan
+            if (musicSlider != null)
+                musicSlider.value = savedVol;
+
+            // Set Volume Mixer (Convert 0-1 ke Decibel)
+            SetMusicVolume(savedVol);
+        }
+        else
+        {
+            // Belum ada save-an (User Baru), set ke 100%
+            if (musicSlider != null) musicSlider.value = 1f;
+            SetMusicVolume(1f);
+        }
     }
 
     public void StartGame()
     {
         SceneManager.LoadScene("Design-Level");
-        
-        float initialVolume = 1.0f;
-        if (musicSlider != null)
-        {
-            musicSlider.value = initialVolume;
-        }
-        SetMusicVolume(initialVolume);
     }
 
-    // ✅ FUNGSI BARU: Buka How To Play
+    // --- FUNGSI PANEL ---
+
     public void OpenHowToPlay()
     {
-        CloseAllPanelContents();
-        
-        if (infoPanel != null)
-        {
-            infoPanel.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("InfoPanel belum di-assign di Inspector!");
-            return;
-        }
-        
-        if (titleText != null)
-        {
-            titleText.text = "How To Play";
-        }
-        else
-        {
-            Debug.LogWarning("TitleText belum di-assign di Inspector!");
-        }
-        
-        if (howToPlayContent != null)
-        {
-            howToPlayContent.SetActive(true);
-        }
-        else
-        {
-            Debug.LogWarning("HowToPlayContent belum di-assign di Inspector!");
-        }
+        OpenPanel(howToPlayContent);
     }
 
-    // ✅ FUNGSI BARU: Buka Credits
     public void OpenCredits()
     {
-        CloseAllPanelContents();
-        
-        if (infoPanel != null)
-        {
-            infoPanel.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("InfoPanel belum di-assign di Inspector!");
-            return;
-        }
-        
-        if (titleText != null)
-        {
-            titleText.text = "Credits";
-        }
-        
-        if (creditsContent != null)
-        {
-            creditsContent.SetActive(true);
-        }
-        else
-        {
-            Debug.LogWarning("CreditsContent belum di-assign di Inspector!");
-        }
+        OpenPanel(creditsContent);
     }
 
-    // ✅ FUNGSI BARU: Buka Settings
     public void OpenSettings()
     {
-        CloseAllPanelContents();
-        
-        if (infoPanel != null)
-        {
-            infoPanel.SetActive(true);
-        }
-        else
-        {
-            Debug.LogError("InfoPanel belum di-assign di Inspector!");
-            return;
-        }
-        
-        if (titleText != null)
-        {
-            titleText.text = "Settings";
-        }
-        
-        if (settingsContent != null)
-        {
-            settingsContent.SetActive(true);
-        }
-        else
-        {
-            Debug.LogWarning("SettingsContent belum di-assign di Inspector!");
-        }
+        OpenPanel(settingsContent);
     }
 
-    // ✅ FUNGSI HELPER: Matikan semua konten panel
-    private void CloseAllPanelContents()
+    // Helper biar kodenya gak duplikat terus
+    private void OpenPanel(GameObject contentToOpen)
     {
-        if (howToPlayContent != null)
-            howToPlayContent.SetActive(false);
-            
-        if (creditsContent != null)
-            creditsContent.SetActive(false);
-            
-        if (settingsContent != null)
-            settingsContent.SetActive(false);
+        CloseAllPanelContents(); // Matiin yg lain dulu
+
+        if (infoPanel != null)
+            infoPanel.SetActive(true); // Nyalain bungkusnya
+        
+        if (contentToOpen != null)
+            contentToOpen.SetActive(true); // Nyalain isinya
+        else
+            Debug.LogWarning("Content Panel belum di-assign di Inspector!");
     }
 
-    // ✅ Tutup Panel
     public void CloseInfoPanel()
     {
-        infoPanel.SetActive(false);
+        if (infoPanel != null)
+            infoPanel.SetActive(false);
+            
         CloseAllPanelContents();
     }
+
+    private void CloseAllPanelContents()
+    {
+        if (howToPlayContent != null) howToPlayContent.SetActive(false);
+        if (creditsContent != null) creditsContent.SetActive(false);
+        if (settingsContent != null) settingsContent.SetActive(false);
+    }
+
+    // --- FUNGSI AUDIO & SETTING ---
 
     public void ToggleFullscreen()
     {
         Screen.fullScreen = !Screen.fullScreen;
     }
 
+    // Dipanggil oleh Slider di OnValueChanged
     public void SetMusicVolume(float volume)
     {
-        mainMixer.SetFloat("MusicVolume", Mathf.Log10(volume) * 20);
+        // Rumus Logaritma: Slider 0.0001 - 1 -> -80dB - 0dB
+        // Mencegah error log(0) = minus infinity
+        float volumeToDb = Mathf.Log10(Mathf.Clamp(volume, 0.0001f, 1f)) * 20;
+        
+        mainMixer.SetFloat("MasterVolume", volumeToDb); // Pastikan nama param di Mixer "MasterVolume"
+
+        // Simpan biar diingat pas restart
+        PlayerPrefs.SetFloat("MasterVolume", volume);
+        PlayerPrefs.Save();
     }
 
-    [Header("WebGL Settings")]
-    public GameObject thankYouPanel; // ✅ Drag panel "Thanks for Playing" ke sini
-    
+    // --- QUIT GAME ---
+
     public void QuitGame()
     {
         Debug.Log("QUIT GAME!");
         
-        #if UNITY_WEBGL && !UNITY_EDITOR
-            // Untuk WebGL, tampilkan panel Thank You
-            if (thankYouPanel != null)
-            {
-                thankYouPanel.SetActive(true);
-            }
-            else
-            {
-                // Fallback: Redirect ke game page
-                Application.OpenURL("https://yourusername.itch.io/yourgame");
-            }
+        #if UNITY_WEBGL
         #else
-            // Untuk Windows/Mac/Linux build
             Application.Quit();
-            
             #if UNITY_EDITOR
-                // Untuk testing di Unity Editor
                 UnityEditor.EditorApplication.isPlaying = false;
             #endif
         #endif

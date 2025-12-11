@@ -485,6 +485,7 @@ GameObject:
   - component: {fileID: 101101357}
   - component: {fileID: 101101356}
   - component: {fileID: 101101355}
+  - component: {fileID: 101101358}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -566,6 +567,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &101101358
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 101101354}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8c24e71295257074da5e07790d2eb538, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  mainMixer: {fileID: 24100000, guid: 7340acb18a2f2dc459a7a28467a121d6, type: 2}
 --- !u!1 &103567154
 GameObject:
   m_ObjectHideFlags: 0
@@ -3561,8 +3575,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   infoPanel: {fileID: 1697949440}
-  titleText: {fileID: 0}
-  contentText: {fileID: 0}
   howToPlayContent: {fileID: 1848967363}
   creditsContent: {fileID: 1568130132}
   settingsContent: {fileID: 1575218129}
@@ -3570,7 +3582,6 @@ MonoBehaviour:
   musicSlider: {fileID: 349973528}
   dimBackground: {fileID: 280696444}
   quitButton: {fileID: 746383526}
-  thankYouPanel: {fileID: 0}
 --- !u!4 &958001374
 Transform:
   m_ObjectHideFlags: 0
@@ -4805,7 +4816,7 @@ MonoBehaviour:
   m_MinValue: 0.0001
   m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 0.0001
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -5438,7 +5449,6 @@ MonoBehaviour:
   masterSlider: {fileID: 1658079182}
   bgmSlider: {fileID: 349973528}
   sfxSlider: {fileID: 1421345227}
-  SettingPanel: {fileID: 1575218129}
 --- !u!82 &1575218132
 AudioSource:
   m_ObjectHideFlags: 0
@@ -6163,9 +6173,9 @@ MonoBehaviour:
   m_HandleRect: {fileID: 916447777}
   m_Direction: 0
   m_MinValue: 0.0001
-  m_MaxValue: 10
+  m_MaxValue: 1
   m_WholeNumbers: 0
-  m_Value: 10
+  m_Value: 1
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
